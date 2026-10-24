@@ -281,6 +281,66 @@ details.desc,details.tn{margin-top:6px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sub.hot,:root:not([data-theme="light"]) .sub.hot .sub-name,:root:not([data-theme="light"]) .sub.hot .x,:root:not([data-theme="light"]) .sub.hot .pct{color:var(--ink)}}
 :root[data-theme="dark"] .sub.hot,:root[data-theme="dark"] .sub.hot .sub-name,:root[data-theme="dark"] .sub.hot .x,:root[data-theme="dark"] .sub.hot .pct{color:var(--ink)}
 .sub.hw,.sub.hw .sub-name,.sub.hw .x,.sub.hw .pct{color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+body{background:var(--bg);background-attachment:scroll}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 500px at 8% -10%,color-mix(in srgb,var(--heat) 12%,transparent),transparent),radial-gradient(800px 500px at 100% 0,rgba(110,120,255,.12),transparent)}
+.card{backdrop-filter:none}
+html{scroll-behavior:smooth}
+.cw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.3,1,.4,1)}
+.cw.open{grid-template-rows:1fr}
+.cwi{overflow:hidden;min-height:0}
+.pop2{animation:popin .45s both}
+.nb{margin-top:8px}
+.nbtn{display:inline-flex;gap:6px;align-items:center;padding:4px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--mute);font-size:12.5px;cursor:pointer;transition:box-shadow .25s,border-color .25s,color .25s,transform .2s}
+.nbtn:hover{border-color:color-mix(in srgb,var(--heat) 60%,var(--line));color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--heat) 18%,transparent),0 0 18px color-mix(in srgb,var(--heat) 35%,transparent);transform:translateY(-1px)}
+.nb.open>.nbtn{color:var(--ink);border-color:var(--ink)}
+.nbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.3,1,.4,1)}
+.nb.open>.nbody{grid-template-rows:1fr}
+.nin{overflow:hidden;min-height:0}
+.nin>.rich{padding-top:8px}
+.banner{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:60;width:min(580px,calc(100% - 24px));display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-left:4px solid #f5b301;border-radius:14px;padding:12px 14px;box-shadow:0 18px 50px -18px rgba(0,0,0,.5);animation:rise .5s both}
+.banner.hidden{display:none}
+.banner span{flex:1 1 260px;font-size:13.5px}
+.bub{overflow:visible}
+.fb{position:absolute;inset:0;border-radius:50%;overflow:hidden;pointer-events:none}
+.aura,.rp{position:absolute;pointer-events:none;border-radius:50%;opacity:0}
+.aura{inset:-16px;background:conic-gradient(from 0deg,rgba(80,160,255,0),rgba(80,170,255,.8),rgba(170,120,255,0) 40%,rgba(80,240,255,.75) 65%,rgba(80,160,255,0));filter:blur(9px);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 26px),#000 calc(100% - 12px));mask:radial-gradient(farthest-side,transparent calc(100% - 26px),#000 calc(100% - 12px));transition:opacity .8s}
+.bub.shield .aura{opacity:1;animation:rim 4s linear infinite,hueb 7s ease-in-out infinite alternate}
+@keyframes hueb{to{filter:blur(9px) hue-rotate(70deg)}}
+.rp{inset:0;border:2px solid rgba(130,200,255,.7)}
+.bub.shield .rp{animation:ripple 2.8s ease-out infinite}
+.bub.shield .rp.r2{animation-delay:1.4s}
+@keyframes ripple{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.55)}}
+.bub.shield{animation:none;box-shadow:0 0 0 3px rgba(90,170,255,.55),0 0 28px 6px rgba(90,170,255,.45)}
+.dust{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:90;animation:dustout 1.5s ease-out both}
+@keyframes dustout{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.2)}}
+.dust.in{animation:dustin 1.3s ease-in both}
+@keyframes dustin{0%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}100%{opacity:1;transform:translate(0,0) scale(1)}}
+.cell.snap{animation:cellsnap 1.6s ease-in forwards}
+@keyframes cellsnap{0%{opacity:1;filter:none}40%{opacity:.85}100%{opacity:0;filter:blur(8px);transform:translate(30px,-20px) scale(.9)}}
+.cell.unsnap{animation:cellun 1.4s ease-out both}
+@keyframes cellun{0%{opacity:0;filter:blur(8px);transform:translate(30px,-20px) scale(.9)}100%{opacity:1;filter:none;transform:none}}
+.wh{animation:rim 1.1s linear infinite}
+.ai{animation-duration:.9s}
+.adtxt{animation-delay:2.3s;color:#c6ffd8;text-shadow:0 0 24px #2eff8a}
+.ad-aura{position:absolute;width:540px;height:540px;border-radius:50%;background:radial-gradient(circle,rgba(255,70,70,.8),rgba(255,70,70,.28) 45%,transparent 70%);animation:redgreen 3s ease-in-out forwards}
+@keyframes redgreen{from{filter:hue-rotate(0deg) blur(6px)}to{filter:hue-rotate(125deg) blur(6px)}}
+.sheet{width:min(520px,100%)}
+.lgw{margin-bottom:8px;border:1px solid var(--line);border-radius:12px;padding:2px 4px 8px}
+.lgw .lg{border:0;margin:0;padding:6px 10px}
+.lgl{display:flex;align-items:center;gap:10px;margin:0;font-weight:400;cursor:pointer}
+.lgx{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:0 10px}
+.lgx .picks{width:100%}
+.tag.add.armed{border-style:solid;border-color:var(--heat);color:var(--heat)}
+.atts{display:flex;gap:10px;flex-wrap:wrap;padding-top:8px;width:100%}
+.att{margin:0;position:relative;display:flex;flex-direction:column;gap:4px;max-width:100%}
+.att img{max-width:100%;border-radius:8px;cursor:zoom-in;border:1px solid var(--line)}
+.att .cap{padding:3px 6px;font-size:12px}
+.att .x{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.55);color:#fff;border-radius:50%;min-width:22px}
+.att input[type=range]{background:var(--cell);margin:0}
+.lb{position:fixed;inset:0;z-index:110;background:rgba(5,6,12,.88);display:grid;place-items:center;padding:20px;cursor:zoom-out;animation:fade .25s both}
+.lb figure{margin:0;text-align:center}
+.lb img{max-width:96vw;max-height:80vh;border-radius:10px}
+.lb figcaption{color:#fff;margin-top:10px}
 </style>
 </head>
 <body>
@@ -303,17 +363,18 @@ details.desc,details.tn{margin-top:6px}
     <div style="margin-top:14px;display:flex;gap:8px"><button class="btn primary" data-a="addChapter">Add chapter</button><button class="btn" data-a="toggleForm">Cancel</button></div>
   </section>
 
-  <section class="card hidden" id="settings"><h2 style="font-size:18px">Settings</h2><label for="msgs" style="margin-top:12px">Celebration lines <small>(one per line, picked at random at 100%)</small></label><textarea id="msgs" rows="5"></textarea><label class="alg" style="margin-top:10px"><input type="checkbox" id="snd" checked> Play sounds</label><label for="io" style="margin-top:12px">Backup <small>(Export, copy the text, then paste it into another copy and Import)</small></label><textarea id="io" rows="4" spellcheck="false"></textarea><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-a="exp">Export</button><button class="btn" data-a="cpy">Copy</button><button class="btn" data-a="imp">Import (replaces data)</button></div><p class="meta" id="io-msg"></p></section>
+  <section class="card hidden" id="settings"><h2 style="font-size:18px">Settings</h2><label for="msgs" style="margin-top:12px">Celebration lines <small>(one per line, picked at random at 100%)</small></label><textarea id="msgs" rows="5"></textarea><label for="amsgs" style="margin-top:12px">Chapter-complete messages <small>(shown under the wheel when a whole chapter turns green, one per line)</small></label><textarea id="amsgs" rows="3"></textarea><label class="alg" style="margin-top:10px"><input type="checkbox" id="snd" checked> Play sounds</label><label style="margin-top:12px">Backup <small>(Export saves a file named like 2026-10-24_backup.txt. Import asks you to pick one.)</small></label><div style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-a="exp">Export backup</button><button class="btn" data-a="imp">Import backup file</button></div><input type="file" id="file" accept=".txt,.json" hidden><textarea id="io" class="hidden" rows="4" spellcheck="false"></textarea><p class="meta" id="io-msg"></p></section>
   <section class="card filters hidden" id="filters">
     <div class="f-top">
       <input id="q" type="search" placeholder="Search chapters, topics, tags" aria-label="Search">
       <select id="sort" aria-label="Order by"><option value="new">Order by: Date added</option><option value="name">Order by: Name</option><option value="subject">Order by: Subject</option><option value="most">Order by: Most mistakes</option><option value="hot">Order by: This week</option><option value="recent">Order by: Last activity</option></select><button class="btn" id="dir" data-a="dir" title="Reverse the order" aria-label="Reverse the order">↕</button>
     </div>
-    <div id="chips"></div>
-    <div class="f-bot"><span id="count"></span><button class="btn ghost" id="minall" data-a="minAll">Collapse all</button><button class="btn ghost hidden" id="clear" data-a="clear">Clear filters</button></div>
+    <div class="cw" id="cw"><div class="cwi"><div id="chips"></div></div></div>
+    <div class="f-bot"><span id="count"></span><button class="btn ghost" id="chipt" data-a="togChips">Show tags ▾</button><button class="btn ghost" id="minall" data-a="minAll">Collapse all</button><button class="btn ghost hidden" id="clear" data-a="clear">Clear filters</button></div>
   </section>
 
   <div id="list"></div>
+<div id="banner" class="banner hidden"><span>⏳ This tab has been open for over 10 minutes. Download a backup now so your data stays safe if something goes wrong.</span><button class="btn primary" data-a="bkNow">Download backup</button><button class="btn ghost" data-a="bkLater">Later</button></div>
 <div id="modal"></div>
   <div class="note">Press + to add a mistake and − to take one back. Bigger, darker bubbles mean more mistakes. Green fills a bubble from the bottom as you mark mistakes reviewed in its calendar.</div>
 </main>
@@ -325,7 +386,10 @@ try { const s = localStorage.getItem(KEY); if (s) state = JSON.parse(s); } catch
 state.tagMeta = state.tagMeta || {};
 let hist = [JSON.stringify(state)], hi = 0;
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
-const save = () => { persist(); const s = JSON.stringify(state); if (s !== hist[hi]) { hist = hist.slice(0, hi + 1); hist.push(s); if (hist.length > 80) hist.shift(); hi = hist.length - 1; } };
+let IMGS = {}; try { IMGS = JSON.parse(localStorage.getItem(KEY + "-img") || "{}"); } catch (e) {}
+const saveImgs = () => { try { localStorage.setItem(KEY + "-img", JSON.stringify(IMGS)); } catch (e) { toast("Storage is full, so a recent image may not be kept. Please export a backup."); } };
+let dirty = false, T0 = Date.now(), bn = false;
+const save = () => { dirty = true; persist(); const s = JSON.stringify(state); if (s !== hist[hi]) { hist = hist.slice(0, hi + 1); hist.push(s); if (hist.length > 80) hist.shift(); hi = hist.length - 1; } };
 const $ = id => document.getElementById(id);
 const uid = () => Math.random().toString(36).slice(2, 9);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -372,10 +436,10 @@ function renderChips() {
 }
 
 const cell = (t, T) => { const n = t.logs.length; return `<div class="cell${seen.has(t.id) ? "" : " enter"}" data-t="${t.id}"><button class="cx" data-a="delAsk" aria-label="Delete topic" title="Delete topic">✕</button>
-  <div class="bub${n >= 4 ? " hi" : ""}${n && rpct(t) === 100 ? " shield" : ""}" draggable="true" data-a="togSubs" role="button" tabindex="0" aria-label="Show sub-topics" title="${T ? Math.round(n / T * 100) : 0}% of this chapter’s mistakes · click for sub-topics" style="width:${size(n)}px;--sz:${size(n)};--p:${shade(n)}%;--r:${rpct(t)}"><span class="num">${n}</span><span class="pc">${T ? Math.round(n / T * 100) : 0}%</span><span class="fill" style="height:${rpct(t)}%"></span></div>
+  <div class="bub${n >= 4 ? " hi" : ""}${n && rpct(t) === 100 ? " shield" : ""}" draggable="true" data-a="togSubs" role="button" tabindex="0" aria-label="Show sub-topics" title="${T ? Math.round(n / T * 100) : 0}% of this chapter’s mistakes · click for sub-topics" style="width:${size(n)}px;--sz:${size(n)};--p:${shade(n)}%;--r:${rpct(t)}"><span class="num">${n}</span><span class="pc">${T ? Math.round(n / T * 100) : 0}%</span><span class="fb"><span class="fill" style="height:${rpct(t)}%"></span></span><i class="aura"></i><i class="rp"></i><i class="rp r2"></i></div>
   <div class="pm"><button data-a="dec" aria-label="Remove one mistake">−</button><button data-a="inc" aria-label="Add one mistake">+</button><button data-a="openCal" aria-label="Open calendar" title="Calendar">📅</button><button data-a="rvAll" aria-label="Mark all as reviewed" title="Mark all as reviewed">✅</button></div>
   <div class="t-name" contenteditable="true" spellcheck="false" data-in="tname" title="Click to rename">${esc(t.name)}</div><div class="stars" title="How serious is this topic?">${[1, 2, 3, 4, 5].map(i => `<button class="st${i <= (t.star || 0) ? " on" : ""}" data-a="star" data-v="${i}" aria-label="${i} star">★</button>`).join("")}</div>${(t.tags || []).length ? `<div class="mini">${t.tags.map(x => `<span class="mt" style="${tcss("t:" + x)}">${temo("t:" + x)} ${esc(x)}</span>`).join("")}</div>` : ""}${editing === t.id ? `<div class="pop">${editForm(t)}</div>` : ""}${delConf === t.id ? `<div class="pop"><div class="edit"><b>Delete “${esc(t.name)}”?</b><div class="meta">Its ${n} mistakes and sub-topics go with it.</div><div style="margin-top:10px;display:flex;gap:8px"><button class="btn del-btn" data-a="delYes">${TR} Delete</button><button class="btn" data-a="delNo">Cancel</button></div></div></div>` : ""}
-  ${t.note ? `<details class="tn"><summary>Note</summary><div class="rich">${md(t.note)}</div></details>` : ""}
+  ${t.note ? nbox("Note", `<div class="rich">${md(t.note)}</div>`) : ""}
   ${subs(t)}
   <div class="t-act"><button class="ic" data-a="editTopic" aria-label="Edit topic" title="Edit">${WR}</button></div>
 </div>`; };
@@ -437,8 +501,8 @@ function adapt() {
   chime([392, 523, 659, 784, 1047, 1319]);
   const pool = POOL.slice().sort(() => Math.random() - .5).slice(0, 12), o = document.createElement("div");
   o.className = "adapt";
-  o.innerHTML = `<div class="wh">☸️</div>${pool.map((e, i) => `<i class="ai" style="--a:${Math.round(Math.random() * 360)}deg;--d:${260 + Math.round(Math.random() * 120)}px;animation-delay:${(.3 + i * .22).toFixed(2)}s">${e}</i>`).join("")}<div class="adtxt">You have Adapted!</div>`;
-  document.body.appendChild(o); setTimeout(() => o.classList.add("out"), 4900); setTimeout(() => o.remove(), 5500);
+  o.innerHTML = `<div class="ad-aura"></div><div class="wh">☸️</div>${pool.map((e, i) => `<i class="ai" style="--a:${Math.round(Math.random() * 360)}deg;--d:${260 + Math.round(Math.random() * 120)}px;animation-delay:${(.2 + i * .14).toFixed(2)}s">${e}</i>`).join("")}<div class="adtxt">${esc(pickA())}</div>`;
+  document.body.appendChild(o); setTimeout(() => o.classList.add("out"), 3900); setTimeout(() => o.remove(), 4500);
 }
 const chConf = c => `<div class="pop cpop"><div class="edit"><b>Delete “${esc(c.name)}”?</b><div class="meta">All ${tot(c)} mistakes and ${c.topics.length} topics go with it.</div><div style="margin-top:10px;display:flex;gap:8px"><button class="btn del-btn" data-a="delChYes">${TR} Delete</button><button class="btn" data-a="delChNo">Cancel</button></div></div></div>`;
 function gStats(s) { const cs = state.chapters.filter(c => c.subject === s), T = cs.reduce((a, c) => a + tot(c), 0), R = cs.reduce((a, c) => a + rc(c), 0); return { n: cs.length, T, R, p: T ? Math.round(R / T * 100) : 0 }; }
@@ -460,7 +524,7 @@ function syncFill(t, c) {
   const was = parseInt(f.style.height) || 0, now = rpct(t), b = cl.querySelector(".bub");
   f.style.height = now + "%"; b.style.setProperty("--r", now); b.classList.toggle("shield", now === 100 && t.logs.length > 0);
   const h = document.querySelector(`[data-c="${c.id}"] .health`); if (h) h.innerHTML = healthIn(c);
-  if (now > was) { drops(b); if (now === 100 && t.logs.length) { const all = c.topics.every(x => x === t || !x.logs.length || rpct(x) === 100); setTimeout(() => { if (all && was < 100) { adapt(); toast(say()); } else celebrate(cl); }, 900); } }
+  if (now > was) { drops(b); if (now === 100 && t.logs.length) { const all = c.topics.every(x => x === t || !x.logs.length || rpct(x) === 100); setTimeout(() => { if (all && was < 100) { adapt(); toast(say()); } else celebrate(cl); }, 900); if (!c.algae) setTimeout(() => { const cc = document.querySelector(`.cell[data-t="${t.id}"]`); if (cc && rpct(t) === 100) snap(cc); }, all && was < 100 ? 4600 : 3300); } }
 }
 function _sf2(t, c) {
   const cl = document.querySelector(`.cell[data-t="${t.id}"]`), f = cl && cl.querySelector(".fill"); if (!f) return;
@@ -471,6 +535,35 @@ function _sf2(t, c) {
 }
 function closeModal() { const k = cal && { c: cal.cid, t: cal.tid }; cal = null; renderModal(); if (k) { const c = state.chapters.find(x => x.id === k.c), t = c && c.topics.find(x => x.id === k.t); if (t) setTimeout(() => syncFill(t, c), 350); } }
 const _sf = t => { const f = document.querySelector(`[data-t="${t.id}"] .fill`); if (f) { f.style.height = rpct(t) + "%"; f.parentNode.style.setProperty("--r", rpct(t)); } };
+const nbox = (l, h) => `<div class="nb"><button class="nbtn" data-a="togNote">📝 ${l}</button><div class="nbody"><div class="nin">${h}</div></div></div>`;
+let srcOpen = null, pasteKey = null, attOpen = new Set();
+const allSrc = () => [...new Set(state.chapters.flatMap(h => h.topics.flatMap(x => Object.values(x.src || {}).flat())))].sort();
+const blk = (t, k) => blocks(t.logs).find(g => g[0] === k) || [k];
+function addSrcTo(t, k, names) { t.src = t.src || {}; blk(t, k).forEach(x => { const a = t.src[x] = t.src[x] || []; names.forEach(n => { if (!a.includes(n)) a.push(n); }); }); }
+const srcForm = k => `<span class="tag-form"><input data-in="src" placeholder="source, source…" aria-label="Source"><button class="btn" data-a="addSrc" data-k="${k}">Add</button></span><div class="picks">${allSrc().map(s => `<button type="button" class="tag t" style="${tcss("s:" + s)}" data-a="pickSrc" data-k="${k}" data-v="${esc(s)}">${temo("s:" + s)} ${esc(s)}</button>`).join("")}</div>`;
+const rowX = (t, g) => {
+  const k = g[0], src = [...new Set(g.flatMap(x => (t.src || {})[x] || []))], att = (t.att || {})[k] || [];
+  return `<div class="lgx">${src.map(s => `<span class="tagw"><span class="tag t" style="${tcss("s:" + s)}">${temo("s:" + s)} ${esc(s)}</span><button class="tx" data-a="rmSrc" data-k="${k}" data-v="${esc(s)}" aria-label="Remove source">×</button></span>`).join("")}${srcOpen === k ? srcForm(k) : `<button class="tag add" data-a="srcAsk" data-k="${k}">+ Source</button>`}<button class="tag add${pasteKey === k ? " armed" : ""}" data-a="pasteAsk" data-k="${k}" title="Click, then press Ctrl+V with an image copied">${pasteKey === k ? "Press Ctrl+V now…" : "📎 Image"}</button>${att.length ? `<div class="nb${attOpen.has(k) ? " open" : ""}" style="width:100%"><button class="nbtn" data-a="togAtt" data-k="${k}">🖼 Show attachments (${att.length})</button><div class="nbody"><div class="nin"><div class="atts">${att.map((a, i) => `<figure class="att"><img src="${IMGS[a.id] || ""}" style="width:${a.w || 160}px" data-a="viewImg" data-k="${k}" data-i="${i}" alt="attachment"><input type="range" min="60" max="320" value="${a.w || 160}" data-aw data-k="${k}" data-i="${i}" aria-label="Resize image"><input class="cap" data-in="cap" data-k="${k}" data-i="${i}" value="${esc(a.cap || "")}" placeholder="Add a note"><button class="x" data-a="rmImg" data-k="${k}" data-i="${i}" aria-label="Remove image">×</button></figure>`).join("")}</div></div></div></div>` : ""}</div>`;
+};
+function dust(cl, inward) {
+  const r = cl.querySelector(".bub").getBoundingClientRect(), R = r.width / 2, cx = r.left + R, cy = r.top + R;
+  for (let i = 0; i < 70; i++) {
+    const a = Math.random() * 6.283, d = Math.sqrt(Math.random()) * R, x = cx + Math.cos(a) * d, y = cy + Math.sin(a) * d, p = document.createElement("i");
+    p.className = "dust" + (inward ? " in" : "");
+    p.style.cssText = `left:${x}px;top:${y}px;--dx:${60 + Math.random() * 140}px;--dy:${-40 - Math.random() * 120}px;--rot:${Math.random() * 360}deg;animation-delay:${((x - r.left) / r.width * .7 + Math.random() * .2).toFixed(2)}s;background:${["#6fdc97", "#2e9d62", "#bff0d2", "#f2f2f2"][i % 4]}`;
+    document.body.appendChild(p); setTimeout(() => p.remove(), 2700);
+  }
+}
+function snap(cl) { dust(cl, false); cl.classList.add("snap"); setTimeout(renderList, 1800); }
+const pickA = () => { const m = state.amsgs && state.amsgs.length ? state.amsgs : ["You have Adapted!"]; return m[Math.floor(Math.random() * m.length)]; };
+function autoBak() { try { localStorage.setItem(KEY + "-auto", JSON.stringify({ at: Date.now(), state })); } catch (e) {} }
+async function doExport() {
+  const d = new Date(), p = n => String(n).padStart(2, "0"), name = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_backup.txt`;
+  const data = JSON.stringify({ app: "mistake-tracker", v: 2, state, imgs: IMGS });
+  let dl = null; try { dl = await claude.use("downloads"); } catch (e) {}
+  if (!dl) { $("io").classList.remove("hidden"); $("io").value = data; $("io").select(); toast("Direct download isn’t available here. The backup text is in Settings."); return; }
+  try { await dl.save({ filename: name, data }); dirty = false; $("banner").classList.add("hidden"); toast("Backup saved: " + name); } catch (e) { toast(e && e.code === "declined" ? "Download cancelled." : "Couldn’t save the backup file."); }
+}
 const dk = x => { const d = new Date(x); return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); };
 const calT = () => { const c = state.chapters.find(x => x.id === cal.cid); return c && c.topics.find(x => x.id === cal.tid); };
 const calShown = t => t.logs.filter(x => cal.sel ? dk(x) === cal.sel : (new Date(x).getFullYear() === cal.y && new Date(x).getMonth() === cal.m)).sort((a, b) => b - a);
@@ -503,7 +596,7 @@ function renderModal(open) {
     <div class="cal-nav"><button class="x" data-a="calNav" data-d="-1" aria-label="Previous month">‹</button><b>${new Date(cal.y, cal.m, 1).toLocaleDateString([], { month: "long", year: "numeric" })}</b><button class="x" data-a="calNav" data-d="1" aria-label="Next month">›</button></div>
     <div class="dow">${"SMTWTFS".split("").map(d => `<span>${d}</span>`).join("")}</div><div class="days">${cells}</div>
     <div class="lg-head"><span>${cal.sel ? "Selected day" : "This month"} · ${shown.length}</span><span><button class="btn ghost" data-a="revAll" data-v="1">Mark all reviewed</button><button class="btn ghost" data-a="revAll" data-v="0">Clear</button></span></div>
-    ${blocks(shown).map(g => `<label class="lg"><input type="checkbox" data-a="rev" data-ts="${g.join(",")}" ${g.every(x => t.rev.includes(x)) ? "checked" : ""}><span>${tf(g[0])}${g.length > 1 ? " – " + hm(g[g.length - 1]) : ""}</span><em>${g.length > 1 ? g.length + " mistakes · " : ""}Reviewed</em></label>`).join("") || `<div class="hint">No mistakes logged ${cal.sel ? "on this day" : "this month"}.</div>`}
+    ${blocks(shown).map(g => `<div class="lgw"><div class="lg"><label class="lgl"><input type="checkbox" data-a="rev" data-ts="${g.join(",")}" ${g.every(x => t.rev.includes(x)) ? "checked" : ""}><span>${tf(g[0])}${g.length > 1 ? " – " + hm(g[g.length - 1]) : ""}</span></label><em>${g.length > 1 ? g.length + " mistakes · " : ""}Reviewed</em></div>${rowX(t, g)}</div>`).join("") || `<div class="hint">No mistakes logged ${cal.sel ? "on this day" : "this month"}.</div>`}
   </div></div>`;
   if (sc) M.querySelector(".sheet").scrollTop = sc;
 }
@@ -526,7 +619,7 @@ function renderList() {
           <h2><button class="x mn" data-a="minC" aria-label="Minimize or expand chapter" title="Minimize / expand">${c.min ? "▸" : "▾"}</button>${esc(c.name)}</h2>
           <div class="tags"><button class="tag s" style="--h:${hue(c.subject)}" data-a="fsub" data-v="${esc(c.subject)}">${esc(c.subject)}</button>${c.tags.map(t => `<span class="tagw"><button class="tag t" style="${tcss(t)}" data-a="ftag" data-v="${esc(t)}">${temo(t)} ${esc(t)}</button><button class="tx" data-a="rmTag" data-v="${esc(t)}" aria-label="Remove tag ${esc(t)}" title="Remove from this chapter">×</button></span>`).join("")}${tagAdd(c)}</div>
           ${c.source ? `<div class="meta">Source: ${esc(c.source)}</div>` : ""}
-          ${c.note ? `<details class="desc"><summary>Description</summary><div class="rich meta">${md(c.note)}</div></details>` : ""}
+          ${c.note ? nbox("Description", `<div class="rich meta">${md(c.note)}</div>`) : ""}
         </div>
         <div class="total"><b>${tot(c)}</b><span>${week(c)} this week</span><div class="health" title="Chapter health: how much of it you have reviewed">${healthIn(c)}</div></div>
       </div>
@@ -581,17 +674,30 @@ const actions = {
   subForm: el => { addingSub = getT(el).id; opened.add(addingSub); renderList(); const i = document.querySelector("[data-in=sub]"); if (i) i.focus(); },
   addSub,
   hUndo: () => jump(-1), hRedo: () => jump(1),
-  togSet: () => { $("settings").classList.toggle("hidden"); $("msgs").value = (state.msgs && state.msgs.length ? state.msgs : MSGS).join("\n"); $("snd").checked = state.sound !== false; },
-  exp: () => { $("io").value = JSON.stringify(state); $("io").select(); $("io-msg").textContent = "Exported. Copy this text."; },
+  togSet: () => { $("settings").classList.toggle("hidden"); $("msgs").value = (state.msgs && state.msgs.length ? state.msgs : MSGS).join("\n"); $("snd").checked = state.sound !== false; $("amsgs").value = (state.amsgs && state.amsgs.length ? state.amsgs : ["You have Adapted!"]).join("\n"); },
+  exp: () => doExport(),
   cpy: () => { $("io").select(); try { navigator.clipboard.writeText($("io").value).then(() => $("io-msg").textContent = "Copied.", () => document.execCommand("copy")); } catch (e) { document.execCommand("copy"); } },
-  imp: () => { try { const d = JSON.parse($("io").value); if (!d || !Array.isArray(d.chapters)) throw 0; state = d; state.tagMeta = state.tagMeta || {}; save(); render(); $("io-msg").textContent = "Imported " + d.chapters.length + " chapters."; } catch (e) { $("io-msg").textContent = "That doesn’t look like exported data."; } },
+  imp: () => $("file").click(),
+  impText: () => { try { const d = JSON.parse($("io").value); if (!d || !Array.isArray(d.chapters)) throw 0; state = d; state.tagMeta = state.tagMeta || {}; save(); render(); $("io-msg").textContent = "Imported " + d.chapters.length + " chapters."; } catch (e) { $("io-msg").textContent = "That doesn’t look like exported data."; } },
   star: el => { const t = getT(el), v = +el.dataset.v; t.star = t.star === v ? 0 : v; save(); el.parentNode.querySelectorAll(".st").forEach((b, i) => b.classList.toggle("on", i < t.star)); },
-  algae: el => { getC(el).algae = el.checked; save(); renderList(); },
+  algae: el => { const c = getC(el), on = el.checked; c.algae = on; save(); renderList(); if (on) c.topics.forEach(t => { if (t.logs.length && rpct(t) === 100) { const cl = document.querySelector(`.cell[data-t="${t.id}"]`); if (cl) { cl.classList.add("unsnap"); dust(cl, true); } } }); },
   togAllSubs: el => { const c = getC(el), all = c.topics.every(t => opened.has(t.id)); c.topics.forEach(t => all ? opened.delete(t.id) : opened.add(t.id)); renderList(); },
   delAsk: el => { delConf = getT(el).id; editing = null; renderList(); },
   delNo: () => { delConf = null; renderList(); },
   delYes: el => { const c = getC(el), id = delConf; c.topics = c.topics.filter(t => t.id !== id); delConf = null; save(); render(); },
   pickTT: el => { const i = $("e-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); el.classList.toggle("on", k < 0); },
+  togChips: el => { const w = $("cw"); w.classList.toggle("open"); const on = w.classList.contains("open"); el.textContent = on ? "Hide tags ▴" : "Show tags ▾"; if (on) $("chips").querySelectorAll(".tag").forEach((c, i) => { c.style.animationDelay = i * 28 + "ms"; c.classList.remove("pop2"); void c.offsetWidth; c.classList.add("pop2"); }); },
+  togNote: el => el.parentNode.classList.toggle("open"),
+  bkNow: () => doExport(),
+  bkLater: () => $("banner").classList.add("hidden"),
+  srcAsk: el => { srcOpen = +el.dataset.k; renderModal(); const i = document.querySelector("[data-in=src]"); if (i) i.focus(); },
+  addSrc: el => { const t = calT(), i = el.closest(".lgx").querySelector("[data-in=src]"), names = i.value.split(",").map(s => s.trim().toLowerCase()).filter(Boolean); if (!names.length) { i.focus(); return; } addSrcTo(t, +el.dataset.k, names); srcOpen = null; save(); renderModal(); },
+  pickSrc: el => { addSrcTo(calT(), +el.dataset.k, [el.dataset.v]); save(); renderModal(); },
+  rmSrc: el => { const t = calT(); blk(t, +el.dataset.k).forEach(x => { if (t.src && t.src[x]) t.src[x] = t.src[x].filter(s => s !== el.dataset.v); }); save(); renderModal(); },
+  pasteAsk: el => { const k = +el.dataset.k; pasteKey = pasteKey === k ? null : k; renderModal(); },
+  togAtt: el => { const k = +el.dataset.k; attOpen.has(k) ? attOpen.delete(k) : attOpen.add(k); el.parentNode.classList.toggle("open"); },
+  viewImg: el => { const a = calT().att[+el.dataset.k][+el.dataset.i], o = document.createElement("div"); o.className = "lb"; o.innerHTML = `<figure><img src="${IMGS[a.id] || ""}" alt=""><figcaption>${esc(a.cap || "")}</figcaption></figure>`; o.onclick = () => o.remove(); document.body.appendChild(o); },
+  rmImg: el => { const t = calT(), L = t.att[+el.dataset.k], a = L.splice(+el.dataset.i, 1)[0]; if (a) delete IMGS[a.id]; saveImgs(); save(); renderModal(); },
   minG: el => { const s = el.dataset.v; state.gmin = state.gmin || {}; state.gmin[s] = !state.gmin[s]; save(); renderList(); },
   delChAsk: el => { delCh = getC(el).id; renderList(); },
   delChNo: () => { delCh = null; renderList(); },
@@ -636,11 +742,12 @@ document.addEventListener("keydown", e => {
   if (e.key === "Enter" && d.in === "topic") addTopic(e.target);
   else if (e.key === "Enter" && d.in === "sub") addSub(e.target);
   else if (e.key === "Enter" && d.in === "tag") addTag(e.target);
+  else if (e.key === "Enter" && d.in === "src") actions.addSrc(e.target.parentNode.querySelector("[data-a=addSrc]"));
   else if ((e.key === "Enter" || e.key === " ") && d.a === "togSubs") { e.preventDefault(); actions.togSubs(e.target); }
   else if (e.key === "Escape" && cal) closeModal();
 });
 document.addEventListener("input", e => { if (e.target.matches("[data-sl]")) { const el = e.target.closest(".sub"), s = getT(e.target).subs.find(x => x.id === el.dataset.s); s.i = +e.target.value; el.style.setProperty("--i", s.i); el.classList.toggle("hot", s.i >= 40); el.classList.toggle("hw", s.i >= 62); el.classList.toggle("crit", s.i >= 85); el.querySelector(".pct").textContent = s.i + "%"; } });
-document.addEventListener("change", e => { const d = e.target.dataset || {}; if ("sl" in d) save(); else if (d.ch === "tsort") { getC(e.target).tsort = e.target.value; save(); renderList(); } else if (e.target.id === "msgs") { state.msgs = e.target.value.split("\n").map(s => s.trim()).filter(Boolean); save(); } else if (e.target.id === "snd") { state.sound = e.target.checked; save(); } else if (d.in === "subname") { getT(e.target).subs.find(x => x.id === e.target.closest(".sub").dataset.s).name = e.target.value.trim() || "Untitled"; save(); } });
+document.addEventListener("change", e => { const d = e.target.dataset || {}; if ("sl" in d) save(); else if (d.ch === "tsort") { getC(e.target).tsort = e.target.value; save(); renderList(); } else if (e.target.id === "msgs") { state.msgs = e.target.value.split("\n").map(s => s.trim()).filter(Boolean); save(); } else if (e.target.id === "amsgs") { state.amsgs = e.target.value.split("\n").map(s => s.trim()).filter(Boolean); save(); } else if (e.target.id === "snd") { state.sound = e.target.checked; save(); } else if (d.in === "subname") { getT(e.target).subs.find(x => x.id === e.target.closest(".sub").dataset.s).name = e.target.value.trim() || "Untitled"; save(); } });
 $("q").addEventListener("input", e => { F.q = e.target.value.trim(); renderList(); });
 $("sort").addEventListener("change", e => { F.sort = e.target.value; renderList(); });
 document.addEventListener("input", e => { if (e.target.matches("[data-color]")) e.target.dataset.touched = 1; });
@@ -655,6 +762,18 @@ document.addEventListener("wheel", e => {
   const r = e.target;
   if (r.matches && r.matches("[data-sl]")) { e.preventDefault(); r.value = Math.max(0, Math.min(100, +r.value + (e.deltaY < 0 ? 1 : -1))); r.dispatchEvent(new Event("input", { bubbles: true })); clearTimeout(wt); wt = setTimeout(save, 400); }
 }, { passive: false });
+setInterval(() => { autoBak(); if (!bn && dirty && Date.now() - T0 > 6e5) { bn = true; $("banner").classList.remove("hidden"); } }, 60000);
+addEventListener("beforeunload", e => { if (dirty && Date.now() - T0 > 6e5) { e.preventDefault(); e.returnValue = ""; } });
+$("file").addEventListener("change", e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { const d = JSON.parse(r.result), s = d.state || d; if (!s || !Array.isArray(s.chapters)) throw 0; autoBak(); state = s; state.tagMeta = state.tagMeta || {}; IMGS = d.imgs || {}; persist(); saveImgs(); hist = [JSON.stringify(state)]; hi = 0; render(); toast(`Imported ${s.chapters.length} chapters.`); } catch (x) { toast("That file doesn’t look like a backup from this tracker."); } e.target.value = ""; }; r.readAsText(f); });
+document.addEventListener("input", e => { const r = e.target; if (r.dataset && "aw" in r.dataset) { const a = calT().att[+r.dataset.k][+r.dataset.i]; a.w = +r.value; r.parentNode.querySelector("img").style.width = a.w + "px"; } });
+document.addEventListener("change", e => { const d = e.target.dataset || {}; if ("aw" in d) save(); else if (d.in === "cap") { calT().att[+d.k][+d.i].cap = e.target.value; save(); } });
+document.addEventListener("paste", e => {
+  if (!cal || pasteKey == null) return;
+  const it = [...((e.clipboardData && e.clipboardData.items) || [])].find(x => x.type.startsWith("image/")); if (!it) return;
+  e.preventDefault(); const rd = new FileReader();
+  rd.onload = () => { const im = new Image(); im.onload = () => { const s = Math.min(1, 1000 / Math.max(im.width, im.height)), cv = document.createElement("canvas"), cx = cv.getContext("2d"); cv.width = Math.round(im.width * s); cv.height = Math.round(im.height * s); cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(im, 0, 0, cv.width, cv.height); const id = uid(); IMGS[id] = cv.toDataURL("image/jpeg", .78); saveImgs(); const t = calT(); t.att = t.att || {}; (t.att[pasteKey] = t.att[pasteKey] || []).push({ id, w: 160, cap: "" }); attOpen.add(pasteKey); pasteKey = null; save(); renderModal(); }; im.src = rd.result; };
+  rd.readAsDataURL(it.getAsFile());
+});
 render();
 </script>
 </body>
