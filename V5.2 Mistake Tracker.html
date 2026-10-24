@@ -363,7 +363,7 @@ html{scroll-behavior:smooth}
     <div style="margin-top:14px;display:flex;gap:8px"><button class="btn primary" data-a="addChapter">Add chapter</button><button class="btn" data-a="toggleForm">Cancel</button></div>
   </section>
 
-  <section class="card hidden" id="settings"><h2 style="font-size:18px">Settings</h2><label for="msgs" style="margin-top:12px">Celebration lines <small>(one per line, picked at random at 100%)</small></label><textarea id="msgs" rows="5"></textarea><label for="amsgs" style="margin-top:12px">Chapter-complete messages <small>(shown under the wheel when a whole chapter turns green, one per line)</small></label><textarea id="amsgs" rows="3"></textarea><label class="alg" style="margin-top:10px"><input type="checkbox" id="snd" checked> Play sounds</label><label style="margin-top:12px">Backup <small>(Export saves a file named like 2026-10-24_backup.txt. Import asks you to pick one.)</small></label><div style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-a="exp">Export backup</button><button class="btn" data-a="imp">Import backup file</button></div><input type="file" id="file" accept=".txt,.json" hidden><textarea id="io" class="hidden" rows="4" spellcheck="false"></textarea><p class="meta" id="io-msg"></p></section>
+  <section class="card hidden" id="settings"><h2 style="font-size:18px">Settings</h2><label for="msgs" style="margin-top:12px">Celebration lines <small>(one per line, picked at random at 100%)</small></label><textarea id="msgs" rows="5"></textarea><label for="amsgs" style="margin-top:12px">Chapter-complete messages <small>(shown under the wheel when a whole chapter turns green, one per line)</small></label><textarea id="amsgs" rows="3"></textarea><label class="alg" style="margin-top:10px"><input type="checkbox" id="snd" checked> Play sounds</label><label for="io" style="margin-top:12px">Backup <small>(Export, copy the text, then paste it into another copy and Import)</small></label><textarea id="io" rows="4" spellcheck="false"></textarea><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-a="exp">Export</button><button class="btn" data-a="cpy">Copy</button><button class="btn" data-a="imp">Import (replaces data)</button></div><input type="file" id="file" hidden><p class="meta" id="io-msg"></p></section>
   <section class="card filters hidden" id="filters">
     <div class="f-top">
       <input id="q" type="search" placeholder="Search chapters, topics, tags" aria-label="Search">
@@ -374,7 +374,7 @@ html{scroll-behavior:smooth}
   </section>
 
   <div id="list"></div>
-<div id="banner" class="banner hidden"><span>⏳ This tab has been open for over 10 minutes. Download a backup now so your data stays safe if something goes wrong.</span><button class="btn primary" data-a="bkNow">Download backup</button><button class="btn ghost" data-a="bkLater">Later</button></div>
+<div id="banner" class="banner hidden"><span>⏳ This tab has been open for over 10 minutes. Export a backup now (copy the text somewhere safe) so your data stays safe if something goes wrong.</span><button class="btn primary" data-a="bkNow">Export backup</button><button class="btn ghost" data-a="bkLater">Later</button></div>
 <div id="modal"></div>
   <div class="note">Press + to add a mistake and − to take one back. Bigger, darker bubbles mean more mistakes. Green fills a bubble from the bottom as you mark mistakes reviewed in its calendar.</div>
 </main>
@@ -557,6 +557,10 @@ function dust(cl, inward) {
 function snap(cl) { dust(cl, false); cl.classList.add("snap"); setTimeout(renderList, 1800); }
 const pickA = () => { const m = state.amsgs && state.amsgs.length ? state.amsgs : ["You have Adapted!"]; return m[Math.floor(Math.random() * m.length)]; };
 function autoBak() { try { localStorage.setItem(KEY + "-auto", JSON.stringify({ at: Date.now(), state })); } catch (e) {} }
+function importText() {
+  try { const d = JSON.parse($("io").value), s = d.state || d; if (!s || !Array.isArray(s.chapters)) throw 0; autoBak(); state = s; state.tagMeta = state.tagMeta || {}; IMGS = d.imgs || {}; persist(); saveImgs(); hist = [JSON.stringify(state)]; hi = 0; render(); toast(`Imported ${s.chapters.length} chapters.`); }
+  catch (x) { toast("That text doesn’t look like an export from this tracker."); }
+}
 async function doExport() {
   const d = new Date(), p = n => String(n).padStart(2, "0"), name = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_backup.txt`;
   const data = JSON.stringify({ app: "mistake-tracker", v: 2, state, imgs: IMGS });
@@ -675,9 +679,9 @@ const actions = {
   addSub,
   hUndo: () => jump(-1), hRedo: () => jump(1),
   togSet: () => { $("settings").classList.toggle("hidden"); $("msgs").value = (state.msgs && state.msgs.length ? state.msgs : MSGS).join("\n"); $("snd").checked = state.sound !== false; $("amsgs").value = (state.amsgs && state.amsgs.length ? state.amsgs : ["You have Adapted!"]).join("\n"); },
-  exp: () => doExport(),
+  exp: () => { $("io").value = JSON.stringify({ app: "mistake-tracker", v: 2, state, imgs: IMGS }); $("io").select(); dirty = false; $("banner").classList.add("hidden"); toast("Exported. Copy the text and keep it somewhere safe."); },
   cpy: () => { $("io").select(); try { navigator.clipboard.writeText($("io").value).then(() => $("io-msg").textContent = "Copied.", () => document.execCommand("copy")); } catch (e) { document.execCommand("copy"); } },
-  imp: () => $("file").click(),
+  imp: () => importText(),
   impText: () => { try { const d = JSON.parse($("io").value); if (!d || !Array.isArray(d.chapters)) throw 0; state = d; state.tagMeta = state.tagMeta || {}; save(); render(); $("io-msg").textContent = "Imported " + d.chapters.length + " chapters."; } catch (e) { $("io-msg").textContent = "That doesn’t look like exported data."; } },
   star: el => { const t = getT(el), v = +el.dataset.v; t.star = t.star === v ? 0 : v; save(); el.parentNode.querySelectorAll(".st").forEach((b, i) => b.classList.toggle("on", i < t.star)); },
   algae: el => { const c = getC(el), on = el.checked; c.algae = on; save(); renderList(); if (on) c.topics.forEach(t => { if (t.logs.length && rpct(t) === 100) { const cl = document.querySelector(`.cell[data-t="${t.id}"]`); if (cl) { cl.classList.add("unsnap"); dust(cl, true); } } }); },
@@ -688,7 +692,7 @@ const actions = {
   pickTT: el => { const i = $("e-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); el.classList.toggle("on", k < 0); },
   togChips: el => { const w = $("cw"); w.classList.toggle("open"); const on = w.classList.contains("open"); el.textContent = on ? "Hide tags ▴" : "Show tags ▾"; if (on) $("chips").querySelectorAll(".tag").forEach((c, i) => { c.style.animationDelay = i * 28 + "ms"; c.classList.remove("pop2"); void c.offsetWidth; c.classList.add("pop2"); }); },
   togNote: el => el.parentNode.classList.toggle("open"),
-  bkNow: () => doExport(),
+  bkNow: () => { if ($("settings").classList.contains("hidden")) actions.togSet(); actions.exp(); $("settings").scrollIntoView({ behavior: "smooth" }); },
   bkLater: () => $("banner").classList.add("hidden"),
   srcAsk: el => { srcOpen = +el.dataset.k; renderModal(); const i = document.querySelector("[data-in=src]"); if (i) i.focus(); },
   addSrc: el => { const t = calT(), i = el.closest(".lgx").querySelector("[data-in=src]"), names = i.value.split(",").map(s => s.trim().toLowerCase()).filter(Boolean); if (!names.length) { i.focus(); return; } addSrcTo(t, +el.dataset.k, names); srcOpen = null; save(); renderModal(); },
