@@ -257,6 +257,30 @@ details.desc,details.tn{margin-top:6px}
 .prog .bar{height:9px;border-radius:99px;background:var(--cell);overflow:hidden}
 .prog i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#6fdc97,#2e9d62);box-shadow:inset 0 2px 0 rgba(255,255,255,.35);transition:width 1s cubic-bezier(.3,.9,.4,1)}
 .prog span{display:block;margin-top:5px;font-size:12px;color:var(--mute)}
+.card{position:relative;transition:background .9s,border-color .9s,box-shadow .9s}
+.card.safe{background:color-mix(in srgb,#2f7bf5 11%,var(--card));border-color:color-mix(in srgb,#5aa8ff 55%,var(--line));box-shadow:0 14px 50px -20px rgba(70,150,255,.6),inset 0 0 40px -22px rgba(90,170,255,.5)}
+.card>.cx{top:12px;right:14px}
+.ch-head .total{margin-right:26px}
+.cpop{left:auto;right:12px;top:46px;z-index:40}
+.sg{--gc:hsl(var(--h) 55% 50%);background:color-mix(in srgb,var(--gc) 7%,var(--card));border:1px solid color-mix(in srgb,var(--gc) 32%,var(--line));border-radius:28px;padding:22px 22px 8px;margin-bottom:24px;transition:background .5s}
+.sg-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;cursor:pointer}
+.sg-head h2{font-size:30px;display:flex;align-items:center;gap:8px}
+.sg .sw{width:14px;height:14px;border-radius:4px;background:var(--gc);flex:none}
+.sg>.prog{margin:14px 0 18px}
+.sg>.prog i{background:linear-gradient(90deg,color-mix(in srgb,var(--gc) 65%,#fff),var(--gc))}
+.sg.min .sg-body{display:none}
+.sg.min{padding-bottom:18px}
+.sg-body{animation:fade .35s both}
+.bub.shield::after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;z-index:3;border-radius:50%;pointer-events:none;background:conic-gradient(from 0deg,transparent 0 62%,rgba(150,210,255,.95) 82%,transparent 100%);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));animation:rim 3s linear infinite}
+@keyframes rim{to{transform:rotate(360deg)}}
+.wh{font-size:130px;line-height:1;animation:rim 2.2s linear infinite;filter:drop-shadow(0 0 28px #ffd86b)}
+.ai{position:absolute;left:50%;top:50%;font-size:34px;font-style:normal;opacity:0;animation:sink 1.3s cubic-bezier(.5,0,.8,.6) both}
+@keyframes sink{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateX(var(--d)) rotate(calc(var(--a)*-1))}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateX(0) rotate(calc(var(--a)*-1)) scale(.1)}}
+.adtxt{animation:rise .8s 3.3s both}
+.sub{--c:hsl(calc(52 - var(--i)*.52) 95% calc(58% - var(--i)*.22%))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sub.hot,:root:not([data-theme="light"]) .sub.hot .sub-name,:root:not([data-theme="light"]) .sub.hot .x,:root:not([data-theme="light"]) .sub.hot .pct{color:var(--ink)}}
+:root[data-theme="dark"] .sub.hot,:root[data-theme="dark"] .sub.hot .sub-name,:root[data-theme="dark"] .sub.hot .x,:root[data-theme="dark"] .sub.hot .pct{color:var(--ink)}
+.sub.hw,.sub.hw .sub-name,.sub.hw .x,.sub.hw .pct{color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.55)}
 </style>
 </head>
 <body>
@@ -296,7 +320,7 @@ details.desc,details.tn{margin-top:6px}
 
 <script>
 const KEY = "mistake-tracker-v1", DAY = 864e5;
-let state = { chapters: [] }, F = { sub: new Set(), tags: new Set(), q: "", sort: "new", dir: 0 }, editing = null, cal = null, addingSub = null, addingTag = null, seen = new Set(), opened = new Set(), wt, delConf = null;
+let state = { chapters: [] }, F = { sub: new Set(), tags: new Set(), q: "", sort: "new", dir: 0 }, editing = null, cal = null, addingSub = null, addingTag = null, seen = new Set(), opened = new Set(), wt, delConf = null, delCh = null;
 try { const s = localStorage.getItem(KEY); if (s) state = JSON.parse(s); } catch (e) {}
 state.tagMeta = state.tagMeta || {};
 let hist = [JSON.stringify(state)], hi = 0;
@@ -349,7 +373,7 @@ function renderChips() {
 
 const cell = (t, T) => { const n = t.logs.length; return `<div class="cell${seen.has(t.id) ? "" : " enter"}" data-t="${t.id}"><button class="cx" data-a="delAsk" aria-label="Delete topic" title="Delete topic">✕</button>
   <div class="bub${n >= 4 ? " hi" : ""}${n && rpct(t) === 100 ? " shield" : ""}" draggable="true" data-a="togSubs" role="button" tabindex="0" aria-label="Show sub-topics" title="${T ? Math.round(n / T * 100) : 0}% of this chapter’s mistakes · click for sub-topics" style="width:${size(n)}px;--sz:${size(n)};--p:${shade(n)}%;--r:${rpct(t)}"><span class="num">${n}</span><span class="pc">${T ? Math.round(n / T * 100) : 0}%</span><span class="fill" style="height:${rpct(t)}%"></span></div>
-  <div class="pm"><button data-a="dec" aria-label="Remove one mistake">−</button><button data-a="inc" aria-label="Add one mistake">+</button><button data-a="openCal" aria-label="Open calendar" title="Calendar">📅</button></div>
+  <div class="pm"><button data-a="dec" aria-label="Remove one mistake">−</button><button data-a="inc" aria-label="Add one mistake">+</button><button data-a="openCal" aria-label="Open calendar" title="Calendar">📅</button><button data-a="rvAll" aria-label="Mark all as reviewed" title="Mark all as reviewed">✅</button></div>
   <div class="t-name" contenteditable="true" spellcheck="false" data-in="tname" title="Click to rename">${esc(t.name)}</div><div class="stars" title="How serious is this topic?">${[1, 2, 3, 4, 5].map(i => `<button class="st${i <= (t.star || 0) ? " on" : ""}" data-a="star" data-v="${i}" aria-label="${i} star">★</button>`).join("")}</div>${(t.tags || []).length ? `<div class="mini">${t.tags.map(x => `<span class="mt" style="${tcss("t:" + x)}">${temo("t:" + x)} ${esc(x)}</span>`).join("")}</div>` : ""}${editing === t.id ? `<div class="pop">${editForm(t)}</div>` : ""}${delConf === t.id ? `<div class="pop"><div class="edit"><b>Delete “${esc(t.name)}”?</b><div class="meta">Its ${n} mistakes and sub-topics go with it.</div><div style="margin-top:10px;display:flex;gap:8px"><button class="btn del-btn" data-a="delYes">${TR} Delete</button><button class="btn" data-a="delNo">Cancel</button></div></div></div>` : ""}
   ${t.note ? `<details class="tn"><summary>Note</summary><div class="rich">${md(t.note)}</div></details>` : ""}
   ${subs(t)}
@@ -382,7 +406,7 @@ const rc = c => c.topics.reduce((a, t) => a + (t.rev || []).filter(x => t.logs.i
 const prog = c => { const T = tot(c), R = rc(c), p = T ? Math.round(R / T * 100) : 0; return { p, label: T ? `${R} of ${T} reviewed · ${p}%` : "No mistakes yet" }; };
 const progHTML = c => { const g = prog(c); return `<div class="prog" data-a="minC" title="Reviewed / total mistakes"><div class="bar"><i style="width:${g.p}%"></i></div><span>${g.label}</span></div>`; };
 function updProg(art, c) { const el = art.querySelector(".prog"); if (!el) return; const g = prog(c); el.querySelector("i").style.width = g.p + "%"; el.querySelector("span").textContent = g.label; }
-const healthIn = c => { setTimeout(() => { const a = document.querySelector(`[data-c="${c.id}"]`); if (a) updProg(a, c); }); const p = cr(c); if (p === null) return `<span class="he">🌱</span><span>Fresh<small>no mistakes yet</small></span>`; const l = [...LV].reverse().find(x => p >= x[0]); return `<span class="he">${l[1]}</span><span>${l[2]}<small>${p}% reviewed</small></span>`; };
+const healthIn = c => { setTimeout(() => { const a = document.querySelector(`[data-c="${c.id}"]`); if (a) { updProg(a, c); a.classList.toggle("safe", cr(c) === 100); updG(c.subject); } }); const p = cr(c); if (p === null) return `<span class="he">🌱</span><span>Fresh<small>no mistakes yet</small></span>`; const l = [...LV].reverse().find(x => p >= x[0]); return `<span class="he">${l[1]}</span><span>${l[2]}<small>${p}% reviewed</small></span>`; };
 const blocks = ids => { const s = [...ids].sort((a, b) => a - b), out = []; s.forEach(x => { const g = out[out.length - 1]; if (g && x - g[g.length - 1] <= 15 * 60000) g.push(x); else out.push([x]); }); return out.reverse(); };
 const hm = x => new Date(x).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 function drops(b) { for (let i = 0; i < 16; i++) { const d = document.createElement("i"); d.className = "drop"; d.style.cssText = `--x:${8 + Math.random() * 84}%;--d:${(Math.random() * .9).toFixed(2)}s`; b.appendChild(d); setTimeout(() => d.remove(), 2000); } }
@@ -396,7 +420,7 @@ const MSGS = ["Booyah! 🔥", "Schyeah! 😎", "Mom, get the camera!! 📸", "KA
 const say = () => { const m = state.msgs && state.msgs.length ? state.msgs : MSGS; return m[Math.floor(Math.random() * m.length)]; };
 const WR = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg>';
 const TR = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"/></svg>';
-const tpicks = t => { const ch = state.chapters.find(x => x.topics.includes(t)), all = ch ? [...new Set(ch.topics.flatMap(x => x.tags || []))].sort() : []; return all.length ? `<div class="picks">${all.map(x => `<button type="button" class="tag t" style="${tcss("t:" + x)}" data-a="pickTT" data-v="${esc(x)}">${temo("t:" + x)} ${esc(x)}</button>`).join("")}</div>` : ""; };
+const tpicks = t => { const all = [...new Set([...state.chapters.flatMap(h => h.topics.flatMap(x => x.tags || [])), ...state.chapters.flatMap(h => h.tags)])].sort(); return all.length ? `<div class="picks">${all.map(x => `<button type="button" class="tag t${(t.tags || []).includes(x) ? " on" : ""}" style="${tcss("t:" + x)}" data-a="pickTT" data-v="${esc(x)}">${temo("t:" + x)} ${esc(x)}</button>`).join("")}</div>` : ""; };
 const ctools = c => { const hid = c.topics.filter(t => t.logs.length && rpct(t) === 100).length; return `<div class="ctools"><select data-ch="tsort" aria-label="Order topics">${[["", "Order: manual (drag)"], ["share", "Order: highest % of mistakes"], ["rev", "Order: highest % reviewed"], ["tag", "Order: tag"], ["stars", "Order: stars"], ["name", "Order: name"]].map(([v, l]) => `<option value="${v}"${(c.tsort || "") === v ? " selected" : ""}>${l}</option>`).join("")}</select><button class="btn" data-a="togAllSubs">Sliders ▾</button><label class="alg"><input type="checkbox" data-a="algae" ${c.algae ? "checked" : ""}> Show algae${hid ? ` (${hid} hidden)` : ""}</label></div>`; };
 const jump = d => { const n = hi + d; if (n < 0 || n >= hist.length) return; hi = n; state = JSON.parse(hist[hi]); persist(); editing = null; delConf = null; cal = null; renderModal(); render(); };
 function chime(notes) { if (state.sound === false) return; try { const A = new (window.AudioContext || window.webkitAudioContext)(); notes.forEach((f, i) => { const o = A.createOscillator(), g = A.createGain(), s = A.currentTime + i * .11; o.type = "triangle"; o.frequency.value = f; g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(.18, s + .02); g.gain.exponentialRampToValueAtTime(.0001, s + .4); o.connect(g); g.connect(A.destination); o.start(s); o.stop(s + .45); }); } catch (e) {} }
@@ -408,7 +432,24 @@ function celebrate(cl) {
   g.className = "ring"; g.style.cssText = `left:${cx}px;top:${cy}px`; document.body.appendChild(g); setTimeout(() => g.remove(), 1200);
   burst(cx, cy, ["✅", "🎉", "✨", "💚", "🔥", "🥳"], 30, 240); toast(say());
 }
+const POOL = ["❓", "🤔", "📚", "🧠", "📖", "💡", "✏️", "🔍", "📝", "🧪", "🔬", "📐", "🎓", "💭", "❗", "🗂️", "📊", "🧩", "⚡", "🔥"];
 function adapt() {
+  chime([392, 523, 659, 784, 1047, 1319]);
+  const pool = POOL.slice().sort(() => Math.random() - .5).slice(0, 12), o = document.createElement("div");
+  o.className = "adapt";
+  o.innerHTML = `<div class="wh">☸️</div>${pool.map((e, i) => `<i class="ai" style="--a:${Math.round(Math.random() * 360)}deg;--d:${260 + Math.round(Math.random() * 120)}px;animation-delay:${(.3 + i * .22).toFixed(2)}s">${e}</i>`).join("")}<div class="adtxt">You have Adapted!</div>`;
+  document.body.appendChild(o); setTimeout(() => o.classList.add("out"), 4900); setTimeout(() => o.remove(), 5500);
+}
+const chConf = c => `<div class="pop cpop"><div class="edit"><b>Delete “${esc(c.name)}”?</b><div class="meta">All ${tot(c)} mistakes and ${c.topics.length} topics go with it.</div><div style="margin-top:10px;display:flex;gap:8px"><button class="btn del-btn" data-a="delChYes">${TR} Delete</button><button class="btn" data-a="delChNo">Cancel</button></div></div></div>`;
+function gStats(s) { const cs = state.chapters.filter(c => c.subject === s), T = cs.reduce((a, c) => a + tot(c), 0), R = cs.reduce((a, c) => a + rc(c), 0); return { n: cs.length, T, R, p: T ? Math.round(R / T * 100) : 0 }; }
+function updG(s) { const g = [...document.querySelectorAll(".sg")].find(x => x.dataset.g === s); if (!g) return; const k = gStats(s), pr = g.querySelector(":scope > .prog"); g.querySelector(".sg-head .total b").textContent = k.p + "%"; pr.querySelector("i").style.width = k.p + "%"; pr.querySelector("span").textContent = `${k.R} of ${k.T} reviewed`; }
+function groupWrap(list, htmls) {
+  const g = {}, order = [];
+  list.forEach((c, i) => { (g[c.subject] = g[c.subject] || (order.push(c.subject), [])).push(htmls[i]); });
+  return order.map(s => { const k = gStats(s), min = (state.gmin || {})[s];
+    return `<section class="sg${min ? " min" : ""}" data-g="${esc(s)}" style="--h:${hue(s)}"><div class="sg-head" data-a="minG" data-v="${esc(s)}"><div><h2><button class="x mn" aria-label="Collapse subject">${min ? "▸" : "▾"}</button><span class="sw"></span>${esc(s)}</h2><div class="meta">${k.n} chapters · ${k.T} mistakes</div></div><div class="total"><b>${k.p}%</b><span>adapted</span></div></div><div class="prog" data-a="minG" data-v="${esc(s)}"><div class="bar"><i style="width:${k.p}%"></i></div><span>${k.R} of ${k.T} reviewed</span></div><div class="sg-body">${g[s].join("")}</div></section>`; }).join("");
+}
+function _ad() {
   chime([392, 523, 659, 784, 1047, 1319]);
   const o = document.createElement("div"); o.className = "adapt";
   o.innerHTML = `<div class="wheel">☸️${["❓", "🤔", "📚", "🧠", "📖", "💡", "✏️", "🔍"].map((e, i) => `<i style="--a:${i * 45}deg">${e}</i>`).join("")}</div><div class="adtxt">You have Adapted!</div>`;
@@ -433,7 +474,7 @@ const _sf = t => { const f = document.querySelector(`[data-t="${t.id}"] .fill`);
 const dk = x => { const d = new Date(x); return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); };
 const calT = () => { const c = state.chapters.find(x => x.id === cal.cid); return c && c.topics.find(x => x.id === cal.tid); };
 const calShown = t => t.logs.filter(x => cal.sel ? dk(x) === cal.sel : (new Date(x).getFullYear() === cal.y && new Date(x).getMonth() === cal.m)).sort((a, b) => b - a);
-const subs = t => `<div class="subwrap${opened.has(t.id) ? " open" : ""}"><div class="subin"><div class="subs">${(t.subs || []).map(s => `<div class="sub${s.i >= 40 ? " hot" : ""}${s.i >= 85 ? " crit" : ""}" data-s="${s.id}" style="--i:${s.i}"><div class="sub-top"><input class="sub-name" data-in="subname" value="${esc(s.name)}" aria-label="Sub-topic name"><span class="pct">${s.i}%</span><button class="x" data-a="delSub" aria-label="Delete sub-topic" title="Delete">×</button></div><input type="range" min="0" max="100" value="${s.i}" data-sl aria-label="Intensity"></div>`).join("")}${addingSub === t.id ? `<div class="sub-add"><input data-in="sub" placeholder="Sub-topic name" aria-label="Sub-topic name"><button class="btn" data-a="addSub">Add</button></div>` : `<button class="btn ghost" data-a="subForm">+ Sub-topic</button>`}</div></div></div>`;
+const subs = t => `<div class="subwrap${opened.has(t.id) ? " open" : ""}"><div class="subin"><div class="subs">${(t.subs || []).map(s => `<div class="sub${s.i >= 40 ? " hot" : ""}${s.i >= 62 ? " hw" : ""}${s.i >= 85 ? " crit" : ""}" data-s="${s.id}" style="--i:${s.i}"><div class="sub-top"><input class="sub-name" data-in="subname" value="${esc(s.name)}" aria-label="Sub-topic name"><span class="pct">${s.i}%</span><button class="x" data-a="delSub" aria-label="Delete sub-topic" title="Delete">×</button></div><input type="range" min="0" max="100" value="${s.i}" data-sl aria-label="Intensity"></div>`).join("")}${addingSub === t.id ? `<div class="sub-add"><input data-in="sub" placeholder="Sub-topic name" aria-label="Sub-topic name"><button class="btn" data-a="addSub">Add</button></div>` : `<button class="btn ghost" data-a="subForm">+ Sub-topic</button>`}</div></div></div>`;
 function addSub(el) {
   const inp = el.closest(".sub-add").querySelector("input"), name = inp.value.trim();
   if (!name) { inp.focus(); return; }
@@ -477,10 +518,10 @@ function renderList() {
     $("list").innerHTML = `<div class="card empty">${state.chapters.length ? "No chapters match these filters." : "No chapters yet. Choose “New chapter” to start logging mistakes."}</div>`;
     return;
   }
-  $("list").innerHTML = list.map((c, i) => {
+  $("list").innerHTML = groupWrap(list, list.map((c, i) => {
     const et = c.topics.find(t => t.id === editing);
-    return `<article class="card${seen.has(c.id) ? "" : " enter"}${c.min ? " min" : ""}" data-c="${c.id}" style="animation-delay:${i * 70}ms">
-      <div class="ch-head" data-a="minC" title="Click to expand or collapse">
+    return `<article class="card${seen.has(c.id) ? "" : " enter"}${c.min ? " min" : ""}${cr(c) === 100 ? " safe" : ""}" data-c="${c.id}" style="animation-delay:${i * 70}ms">
+      <button class="cx" data-a="delChAsk" aria-label="Delete chapter" title="Delete chapter">✕</button><div class="ch-head" data-a="minC" title="Click to expand or collapse">
         <div>
           <h2><button class="x mn" data-a="minC" aria-label="Minimize or expand chapter" title="Minimize / expand">${c.min ? "▸" : "▾"}</button>${esc(c.name)}</h2>
           <div class="tags"><button class="tag s" style="--h:${hue(c.subject)}" data-a="fsub" data-v="${esc(c.subject)}">${esc(c.subject)}</button>${c.tags.map(t => `<span class="tagw"><button class="tag t" style="${tcss(t)}" data-a="ftag" data-v="${esc(t)}">${temo(t)} ${esc(t)}</button><button class="tx" data-a="rmTag" data-v="${esc(t)}" aria-label="Remove tag ${esc(t)}" title="Remove from this chapter">×</button></span>`).join("")}${tagAdd(c)}</div>
@@ -489,12 +530,12 @@ function renderList() {
         </div>
         <div class="total"><b>${tot(c)}</b><span>${week(c)} this week</span><div class="health" title="Chapter health: how much of it you have reviewed">${healthIn(c)}</div></div>
       </div>
-      ${progHTML(c)}<div class="cbody">${ctools(c)}${ttags(c)}<div class="board">${c.topics.length ? topicsVis(c).map(t => cell(t, tot(c))).join("") : `<div class="hint">Add a topic below and it will appear here as a bubble.</div>`}</div>
+      ${delCh === c.id ? chConf(c) : ""}${progHTML(c)}<div class="cbody">${ctools(c)}${ttags(c)}<div class="board">${c.topics.length ? topicsVis(c).map(t => cell(t, tot(c))).join("") : `<div class="hint">Add a topic below and it will appear here as a bubble.</div>`}</div>
       
       <div class="addt"><input placeholder="Add a topic, e.g. Phases of meiosis" data-in="topic" aria-label="Topic name"><button class="btn" data-a="addTopic">Add topic</button></div>
-      <div style="margin-top:10px"><button class="btn ghost del" data-a="delChapter">Delete chapter</button></div>
+      
     </div></article>`;
-  }).join("");
+  }));
 }
 const render = () => { renderChips(); renderList(); state.chapters.forEach(c => { seen.add(c.id); c.topics.forEach(t => seen.add(t.id)); }); };
 
@@ -550,7 +591,12 @@ const actions = {
   delAsk: el => { delConf = getT(el).id; editing = null; renderList(); },
   delNo: () => { delConf = null; renderList(); },
   delYes: el => { const c = getC(el), id = delConf; c.topics = c.topics.filter(t => t.id !== id); delConf = null; save(); render(); },
-  pickTT: el => { const i = $("e-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); },
+  pickTT: el => { const i = $("e-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); el.classList.toggle("on", k < 0); },
+  minG: el => { const s = el.dataset.v; state.gmin = state.gmin || {}; state.gmin[s] = !state.gmin[s]; save(); renderList(); },
+  delChAsk: el => { delCh = getC(el).id; renderList(); },
+  delChNo: () => { delCh = null; renderList(); },
+  delChYes: () => { const id = delCh; state.chapters = state.chapters.filter(c => c.id !== id); delCh = null; save(); render(); },
+  rvAll: el => { const t = getT(el), c = getC(el); t.rev = [...new Set([...(t.rev || []), ...t.logs])]; save(); syncFill(t, c); },
   ttag: el => { const id = getC(el).id, s = TF[id] || (TF[id] = new Set()); toggle(s, el.dataset.v); renderList(); },
   pickTag: el => { const i = $("f-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); },
   tagMenu: () => $("tag-menu").classList.toggle("hidden"),
@@ -582,7 +628,7 @@ const actions = {
   delChapter: el => arm(el, () => { const id = getC(el).id; state.chapters = state.chapters.filter(c => c.id !== id); save(); render(); })
 };
 document.addEventListener("click", e => { document.querySelectorAll(".menu").forEach(m => { if (!m.parentNode.contains(e.target)) m.classList.add("hidden"); });
-  if ((editing || delConf) && !e.target.closest(".pop,[data-a=editTopic],[data-a=delAsk]")) { document.querySelectorAll(".pop").forEach(p => p.remove()); editing = null; delConf = null; } const el = e.target.closest("[data-a]"); if (el && !(el.dataset.a === "minC" && e.target.closest("input,select,textarea,summary,.tag-form,.tagw,.rich"))) actions[el.dataset.a](el); });
+  if ((editing || delConf || delCh) && !e.target.closest(".pop,[data-a=editTopic],[data-a=delAsk],[data-a=delChAsk]")) { document.querySelectorAll(".pop").forEach(p => p.remove()); editing = null; delConf = null; delCh = null; } const el = e.target.closest("[data-a]"); if (el && !(el.dataset.a === "minC" && e.target.closest("input,select,textarea,summary,.tag-form,.tagw,.rich"))) actions[el.dataset.a](el); });
 document.addEventListener("keydown", e => {
   const d = e.target.dataset || {};
   if ((e.ctrlKey || e.metaKey) && /^[zy]$/i.test(e.key) && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) && !e.target.isContentEditable) { e.preventDefault(); jump(e.key.toLowerCase() === "y" || e.shiftKey ? 1 : -1); return; }
@@ -593,7 +639,7 @@ document.addEventListener("keydown", e => {
   else if ((e.key === "Enter" || e.key === " ") && d.a === "togSubs") { e.preventDefault(); actions.togSubs(e.target); }
   else if (e.key === "Escape" && cal) closeModal();
 });
-document.addEventListener("input", e => { if (e.target.matches("[data-sl]")) { const el = e.target.closest(".sub"), s = getT(e.target).subs.find(x => x.id === el.dataset.s); s.i = +e.target.value; el.style.setProperty("--i", s.i); el.classList.toggle("hot", s.i >= 40); el.classList.toggle("crit", s.i >= 85); el.querySelector(".pct").textContent = s.i + "%"; } });
+document.addEventListener("input", e => { if (e.target.matches("[data-sl]")) { const el = e.target.closest(".sub"), s = getT(e.target).subs.find(x => x.id === el.dataset.s); s.i = +e.target.value; el.style.setProperty("--i", s.i); el.classList.toggle("hot", s.i >= 40); el.classList.toggle("hw", s.i >= 62); el.classList.toggle("crit", s.i >= 85); el.querySelector(".pct").textContent = s.i + "%"; } });
 document.addEventListener("change", e => { const d = e.target.dataset || {}; if ("sl" in d) save(); else if (d.ch === "tsort") { getC(e.target).tsort = e.target.value; save(); renderList(); } else if (e.target.id === "msgs") { state.msgs = e.target.value.split("\n").map(s => s.trim()).filter(Boolean); save(); } else if (e.target.id === "snd") { state.sound = e.target.checked; save(); } else if (d.in === "subname") { getT(e.target).subs.find(x => x.id === e.target.closest(".sub").dataset.s).name = e.target.value.trim() || "Untitled"; save(); } });
 $("q").addEventListener("input", e => { F.q = e.target.value.trim(); renderList(); });
 $("sort").addEventListener("change", e => { F.sort = e.target.value; renderList(); });
