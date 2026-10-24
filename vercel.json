@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/V5.2 Mistake Tracker.html" }
+  ]
+}
