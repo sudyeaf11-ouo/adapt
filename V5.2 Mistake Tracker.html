@@ -367,6 +367,36 @@ html{scroll-behavior:smooth}
 .adsub{position:absolute;bottom:18%;width:92%;text-align:center;font:600 24px Inter,"Hind Siliguri",sans-serif;color:#fff;opacity:0;transform:translateY(14px);transition:opacity .7s .35s,transform .7s .35s}
 .adtxt.show,.adsub.show{opacity:1;transform:none}
 .toast{z-index:140}
+.btn,.nbtn{position:relative;overflow:hidden}
+.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.25;transform:scale(0);animation:ripple2 .6s ease-out forwards;pointer-events:none}
+@keyframes ripple2{to{transform:scale(1);opacity:0}}
+.btn:active,.nbtn:active,.ic:active,.tag:active,.x:active{transform:scale(.94)}
+.pm button{transition:transform .22s cubic-bezier(.3,1.6,.5,1),border-color .2s,background .2s,box-shadow .2s}
+.pm button:hover{transform:translateY(-2px) scale(1.1);box-shadow:0 8px 18px -10px rgba(0,0,0,.45)}
+.pm button:active{transform:scale(.9)}
+.pm button[data-tip]{position:relative}
+.pm button[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(4px);width:210px;padding:8px 10px;border-radius:10px;background:var(--ink);color:var(--bg);font-size:12px;line-height:1.35;font-weight:500;text-align:left;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:25}
+.pm button[data-tip]:hover::after{opacity:1;transform:translateX(-50%);transition-delay:.7s}
+.bub{transition:width .55s cubic-bezier(.3,1.4,.5,1),background .4s,box-shadow .4s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.bub:hover{transform:scale(1.06)}
+.bub:active{transform:scale(.95)}
+.cell{transition:transform .25s}
+.sub{transition:background .25s,color .25s,transform .2s}
+.sub:hover{transform:translateX(3px)}
+.leaving{animation:leave .38s ease-in forwards;pointer-events:none}
+@keyframes leave{to{opacity:0;transform:scale(.8) translateY(10px);filter:blur(4px)}}
+.modal.out{pointer-events:none}
+.modal.out .back{animation:fadeout .22s forwards}
+.modal.out .sheet{animation:sheetout .22s ease-in forwards}
+@keyframes fadeout{to{opacity:0}}
+@keyframes sheetout{to{opacity:0;transform:translateY(20px) scale(.96)}}
+.lgw{transition:background .6s,border-color .6s,transform .25s,box-shadow .25s}
+.lgw:hover{transform:translateY(-2px);box-shadow:0 10px 24px -16px rgba(0,0,0,.55);border-color:color-mix(in srgb,var(--ink) 35%,var(--line))}
+.lgw.ent{animation:rowin .5s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--k,0)*55ms)}
+@keyframes rowin{from{opacity:0;transform:translateY(14px) scale(.97)}}
+.lgw.wave{transition-delay:calc(var(--k,0)*70ms)}
+.lgw.wave.done::before{animation-delay:calc(var(--k,0)*70ms)}
+.lnote{flex:1 1 100%;padding:4px 8px;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -463,8 +493,8 @@ function renderChips() {
 }
 
 const cell = (t, T) => { const n = t.logs.length; return `<div class="cell${seen.has(t.id) ? "" : " enter"}" data-t="${t.id}"><button class="cx" data-a="delAsk" aria-label="Delete topic" title="Delete topic">✕</button>
-  <div class="bub${n >= 4 ? " hi" : ""}${n && rpct(t) === 100 ? " shield" : ""}" draggable="true" data-a="togSubs" role="button" tabindex="0" aria-label="Show sub-topics" title="${T ? Math.round(n / T * 100) : 0}% of this chapter’s mistakes · click for sub-topics" style="width:${size(n)}px;--sz:${size(n)};--p:${shade(n)}%;--r:${rpct(t)}"><span class="num">${n}</span><span class="pc">${T ? Math.round(n / T * 100) : 0}%</span><span class="fb"><span class="fill" style="height:${rpct(t)}%"></span></span><i class="aura"></i><i class="rp"></i><i class="rp r2"></i></div>
-  <div class="pm"><button data-a="dec" aria-label="Remove one mistake">−</button><button data-a="inc" aria-label="Add one mistake">+</button><button data-a="openCal" aria-label="Open calendar" title="Calendar">📅</button><button data-a="rvAll" aria-label="Mark all as reviewed" title="Mark all as reviewed">✅</button></div>
+  <div class="bub${n >= 4 ? " hi" : ""}${n && rpct(t) === 100 ? " shield" : ""}" draggable="true" data-a="togSubs" role="button" tabindex="0" aria-label="Show sub-topics" title="${T ? Math.round(n / T * 100) : 0}% of this chapter’s mistakes · click for sub-topics" style="width:${size(n)}px;--sz:${size(n)};--p:${shade(n)}%;--r:${rpct(t)}"><span class="num">${numTxt(t)}</span><span class="pc">${T ? Math.round(n / T * 100) : 0}%</span><span class="fb"><span class="fill" style="height:${rpct(t)}%"></span></span><i class="aura"></i><i class="rp"></i><i class="rp r2"></i></div>
+  <div class="pm"><button data-a="dec" aria-label="Remove one mistake">−</button><button data-a="inc" aria-label="Add one mistake">+</button><button data-a="openCal" aria-label="Open calendar" title="Calendar">📅</button><button data-a="rvAll" aria-label="Mark all as reviewed" title="Mark all as reviewed">✅</button><button data-a="rpt" aria-label="Reviewed mistake happened again" data-tip="Reminder: a mistake you already reviewed happened again. Adds 0.1 each press, and ten presses become a new mistake. Nothing is marked reviewed.">🔁</button></div>
   <div class="t-name" contenteditable="true" spellcheck="false" data-in="tname" title="Click to rename">${esc(t.name)}</div><div class="stars" title="How serious is this topic?">${[1, 2, 3, 4, 5].map(i => `<button class="st${i <= (t.star || 0) ? " on" : ""}" data-a="star" data-v="${i}" aria-label="${i} star">★</button>`).join("")}</div>${(t.tags || []).length ? `<div class="mini">${t.tags.map(x => `<span class="mt" style="${tcss("t:" + x)}">${temo("t:" + x)} ${esc(x)}</span>`).join("")}</div>` : ""}${editing === t.id ? `<div class="pop">${editForm(t)}</div>` : ""}${delConf === t.id ? `<div class="pop"><div class="edit"><b>Delete “${esc(t.name)}”?</b><div class="meta">Its ${n} mistakes and sub-topics go with it.</div><div style="margin-top:10px;display:flex;gap:8px"><button class="btn del-btn" data-a="delYes">${TR} Delete</button><button class="btn" data-a="delNo">Cancel</button></div></div></div>` : ""}
   ${t.note ? nbox("Note", `<div class="rich">${md(t.note)}</div>`) : ""}
   ${subs(t)}
@@ -560,10 +590,13 @@ function _sf2(t, c) {
   const h = document.querySelector(`[data-c="${c.id}"] .health`); if (h) h.innerHTML = healthIn(c);
   if (now > was) { drops(b); if (now === 100 && t.logs.length) celebrate(cl); }
 }
-function closeModal() { const k = cal && { c: cal.cid, t: cal.tid }; cal = null; renderModal(); if (k) { const c = state.chapters.find(x => x.id === k.c), t = c && c.topics.find(x => x.id === k.t); if (t) setTimeout(() => syncFill(t, c), 350); } }
+function closeModal() { const k = cal && { c: cal.cid, t: cal.tid }; cal = null; const m = document.querySelector(".modal"); if (m) m.classList.add("out"); setTimeout(renderModal, 230); if (k) { const c = state.chapters.find(x => x.id === k.c), t = c && c.topics.find(x => x.id === k.t); if (t) setTimeout(() => syncFill(t, c), 350); } }
 const _sf = t => { const f = document.querySelector(`[data-t="${t.id}"] .fill`); if (f) { f.style.height = rpct(t) + "%"; f.parentNode.style.setProperty("--r", rpct(t)); } };
+const numTxt = t => { const n = t.logs.length, r = t.rep || 0; return r ? `${n}.${r}` : `${n}`; };
+let rowAnim = false;
 const gConf = (s, k) => `<div class="pop cpop"><div class="edit"><b>Delete subject “${esc(s)}”?</b><div class="meta">${k.n} chapters and ${k.T} mistakes go with it.</div><div style="margin-top:10px;display:flex;gap:8px"><button class="btn del-btn" data-a="delGYes">${TR} Delete</button><button class="btn" data-a="delGNo">Cancel</button></div></div></div>`;
 function addImgFile(f, k) { const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { const s = Math.min(1, 1000 / Math.max(im.width, im.height)), cv = document.createElement("canvas"), cx = cv.getContext("2d"); cv.width = Math.round(im.width * s); cv.height = Math.round(im.height * s); cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(im, 0, 0, cv.width, cv.height); const id = uid(), t = calT(); if (!t) return; IMGS[id] = cv.toDataURL("image/jpeg", .78); saveImgs(); t.att = t.att || {}; (t.att[k] = t.att[k] || []).push({ id, w: 160, cap: "", flag: "" }); attOpen.add(k); save(); renderModal(); }; im.src = rd.result; }; rd.readAsDataURL(f); }
+document.addEventListener("pointerdown", e => { const b = e.target.closest && e.target.closest(".btn,.nbtn"); if (!b) return; const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2, i = document.createElement("i"); i.className = "rip"; i.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`; b.appendChild(i); setTimeout(() => i.remove(), 650); });
 $("up").addEventListener("change", e => { [...e.target.files].forEach(f => addImgFile(f, upKey)); e.target.value = ""; });
 const nbox = (l, h) => `<div class="nb"><button class="nbtn" data-a="togNote">📝 ${l}</button><div class="nbody"><div class="nin">${h}</div></div></div>`;
 let srcOpen = null, pasteKey = null, attOpen = new Set(); const chG = {}; const chOK = c => c.topics.some(x => x.logs.length) && c.topics.every(x => !x.logs.length || rpct(x) === 100);
@@ -573,7 +606,7 @@ function addSrcTo(t, k, names) { t.src = t.src || {}; blk(t, k).forEach(x => { c
 const srcForm = k => `<span class="tag-form"><input data-in="src" placeholder="source, source…" aria-label="Source"><button class="btn" data-a="addSrc" data-k="${k}">Add</button><button class="x" data-a="srcNo" aria-label="Close">×</button></span><div class="picks">${allSrc().map(s => `<button type="button" class="tag t" style="${tcss("s:" + s)}" data-a="pickSrc" data-k="${k}" data-v="${esc(s)}">${temo("s:" + s)} ${esc(s)}</button>`).join("")}</div>`;
 const rowX = (t, g) => {
   const k = g[0], src = [...new Set(g.flatMap(x => (t.src || {})[x] || []))], att = (t.att || {})[k] || [];
-  return `<div class="lgx">${hideSrc ? "" : src.map(s => `<span class="tagw"><span class="tag t" style="${tcss("s:" + s)}">${temo("s:" + s)} ${esc(s)}</span><button class="tx" data-a="rmSrc" data-k="${k}" data-v="${esc(s)}" aria-label="Remove source">×</button></span>`).join("")}${hideSrc ? "" : srcOpen === k ? srcForm(k) : `<button class="tag add" data-a="srcAsk" data-k="${k}">+ Source</button>`}<button class="tag add${pasteKey === k ? " armed" : ""}" data-a="pasteAsk" data-k="${k}" title="Click, then press Ctrl+V with an image copied">${pasteKey === k ? "Press Ctrl+V now…" : "📎 Image"}</button><button class="tag add" data-a="upAsk" data-k="${k}">⬆ Upload</button>${att.length ? `<div class="nb${attOpen.has(k) ? " open" : ""}" style="width:100%"><button class="nbtn" data-a="togAtt" data-k="${k}">🖼 Show attachments (${att.length})</button><div class="nbody"><div class="nin"><div class="atts">${att.map((a, i) => `<figure class="att"><img src="${IMGS[a.id] || ""}" style="width:${a.w || 160}px" data-a="viewImg" data-k="${k}" data-i="${i}" alt="attachment"><input type="range" min="60" max="320" value="${a.w || 160}" data-aw data-k="${k}" data-i="${i}" aria-label="Resize image"><input class="cap" data-in="cap" data-k="${k}" data-i="${i}" value="${esc(a.cap || "")}" placeholder="Add a note"><div class="flags">${["🟢", "❓", "🚩"].map(f => `<button class="fl2${a.flag === f ? " on" : ""}" data-a="flagImg" data-k="${k}" data-i="${i}" data-f="${f}" title="${f === "🟢" ? "Needs to be seen" : f === "❓" ? "Confusing" : "Not worth much time"}">${f}</button>`).join("")}</div>${a.flag ? `<span class="bdg">${a.flag}</span>` : ""}<button class="x" data-a="rmImg" data-k="${k}" data-i="${i}" aria-label="Remove image">×</button></figure>`).join("")}</div></div></div></div>` : ""}</div>`;
+  return `<div class="lgx">${hideSrc ? "" : src.map(s => `<span class="tagw"><span class="tag t" style="${tcss("s:" + s)}">${temo("s:" + s)} ${esc(s)}</span><button class="tx" data-a="rmSrc" data-k="${k}" data-v="${esc(s)}" aria-label="Remove source">×</button></span>`).join("")}${hideSrc ? "" : srcOpen === k ? srcForm(k) : `<button class="tag add" data-a="srcAsk" data-k="${k}">+ Source</button>`}<button class="tag add${pasteKey === k ? " armed" : ""}" data-a="pasteAsk" data-k="${k}" title="Click, then press Ctrl+V with an image copied">${pasteKey === k ? "Press Ctrl+V now…" : "📎 Image"}</button><button class="tag add" data-a="upAsk" data-k="${k}">⬆ Upload</button><input class="lnote" data-in="lnote" data-k="${k}" value="${esc(((t.ln || {})[k]) || "")}" placeholder="Add a note to this log…" aria-label="Log note">${att.length ? `<div class="nb${attOpen.has(k) ? " open" : ""}" style="width:100%"><button class="nbtn" data-a="togAtt" data-k="${k}">🖼 Show attachments (${att.length})</button><div class="nbody"><div class="nin"><div class="atts">${att.map((a, i) => `<figure class="att"><img src="${IMGS[a.id] || ""}" style="width:${a.w || 160}px" data-a="viewImg" data-k="${k}" data-i="${i}" alt="attachment"><input type="range" min="60" max="320" value="${a.w || 160}" data-aw data-k="${k}" data-i="${i}" aria-label="Resize image"><input class="cap" data-in="cap" data-k="${k}" data-i="${i}" value="${esc(a.cap || "")}" placeholder="Add a note"><div class="flags">${["🟢", "❓", "🚩"].map(f => `<button class="fl2${a.flag === f ? " on" : ""}" data-a="flagImg" data-k="${k}" data-i="${i}" data-f="${f}" title="${f === "🟢" ? "Needs to be seen" : f === "❓" ? "Confusing" : "Not worth much time"}">${f}</button>`).join("")}</div>${a.flag ? `<span class="bdg">${a.flag}</span>` : ""}<button class="x" data-a="rmImg" data-k="${k}" data-i="${i}" aria-label="Remove image">×</button></figure>`).join("")}</div></div></div></div>` : ""}</div>`;
 };
 function dust(cl, inward) {
   const r = cl.querySelector(".bub").getBoundingClientRect(), R = r.width / 2, cx = r.left + R, cy = r.top + R;
@@ -609,13 +642,13 @@ function addSub(el) {
 }
 function pulse(b, cellEl, d) {
   b.classList.remove("pulse"); void b.offsetWidth; b.classList.add("pulse");
-  const f = document.createElement("span"); f.className = "fl"; f.textContent = d > 0 ? "+1" : "−1"; cellEl.appendChild(f); f.addEventListener("animationend", () => f.remove());
+  const f = document.createElement("span"); f.className = "fl"; f.textContent = typeof d === "string" ? d : d > 0 ? "+1" : "−1"; cellEl.appendChild(f); f.addEventListener("animationend", () => f.remove());
 }
 function renderModal(open) {
   const M = $("modal"), sc = (M.querySelector(".sheet") || {}).scrollTop || 0;
   const t = cal && calT();
   if (!t) { cal = null; M.innerHTML = ""; return; }
-  t.rev = t.rev || [];
+  t.rev = t.rev || []; const ra = rowAnim; rowAnim = false;
   const c = state.chapters.find(x => x.id === cal.cid), by = {};
   t.logs.forEach(x => (by[dk(x)] = by[dk(x)] || []).push(x));
   const pad = new Date(cal.y, cal.m, 1).getDay(), n = new Date(cal.y, cal.m + 1, 0).getDate(), today = dk(Date.now());
@@ -630,7 +663,7 @@ function renderModal(open) {
     <div class="cal-nav"><button class="x" data-a="calNav" data-d="-1" aria-label="Previous month">‹</button><b>${new Date(cal.y, cal.m, 1).toLocaleDateString([], { month: "long", year: "numeric" })}</b><button class="x" data-a="calNav" data-d="1" aria-label="Next month">›</button></div>
     <div class="dow">${"SMTWTFS".split("").map(d => `<span>${d}</span>`).join("")}</div><div class="days">${cells}</div>
     <div class="lg-head"><span>${cal.sel ? "Selected day" : "This month"} · ${shown.length}</span><span><button class="btn ghost" data-a="togSrcs">${hideSrc ? "Show" : "Hide"} source tags</button><button class="btn ghost" data-a="revAll" data-v="1">Mark all reviewed</button><button class="btn ghost" data-a="revAll" data-v="0">Clear</button></span></div>
-    ${blocks(shown).map(g => `<div class="lgw${g.every(x => t.rev.includes(x)) ? " done" : ""}"><div class="lg"><label class="lgl"><input type="checkbox" data-a="rev" data-ts="${g.join(",")}" ${g.every(x => t.rev.includes(x)) ? "checked" : ""}><span>${tf(g[0])}${g.length > 1 ? " – " + hm(g[g.length - 1]) : ""}</span></label><em>${g.length > 1 ? g.length + " mistakes · " : ""}Reviewed</em></div>${rowX(t, g)}</div>`).join("") || `<div class="hint">No mistakes logged ${cal.sel ? "on this day" : "this month"}.</div>`}
+    ${blocks(shown).map((g, ix) => `<div class="lgw${ra ? " ent" : ""}${g.every(x => t.rev.includes(x)) ? " done" : ""}" style="--k:${ix}"><div class="lg"><label class="lgl"><input type="checkbox" data-a="rev" data-ts="${g.join(",")}" ${g.every(x => t.rev.includes(x)) ? "checked" : ""}><span>${tf(g[0])}${g.length > 1 ? " – " + hm(g[g.length - 1]) : ""}</span></label><em>${g.length > 1 ? g.length + " mistakes · " : ""}Reviewed</em></div>${rowX(t, g)}</div>`).join("") || `<div class="hint">No mistakes logged ${cal.sel ? "on this day" : "this month"}.</div>`}
   </div></div>`;
   if (sc) M.querySelector(".sheet").scrollTop = sc;
 }
@@ -672,11 +705,11 @@ const toggle = (set, v) => set.has(v) ? set.delete(v) : set.add(v);
 
 function bump(el, d) {
   const t = getT(el), c = getC(el);
-  if (d > 0) t.logs.push(Date.now()); else if (t.logs.length) { t.logs.pop(); t.rev = (t.rev || []).filter(x => t.logs.includes(x)); } else return;
+  if (d > 0) t.logs.push(Date.now()); else if (t.rep) t.rep--; else if (t.logs.length) { t.logs.pop(); t.rev = (t.rev || []).filter(x => t.logs.includes(x)); } else return;
   save();
   const n = t.logs.length, b = el.closest(".cell").querySelector(".bub"), art = el.closest("[data-c]");
   b.style.width = size(n) + "px"; b.style.setProperty("--sz", size(n)); b.style.setProperty("--p", shade(n) + "%"); pulse(b, el.closest(".cell"), d);
-  b.classList.toggle("hi", n >= 4); b.classList.toggle("shield", n > 0 && rpct(t) === 100); b.firstElementChild.textContent = n;
+  b.classList.toggle("hi", n >= 4); b.classList.toggle("shield", n > 0 && rpct(t) === 100); b.firstElementChild.textContent = numTxt(t);
   syncFill(t, c); pcts(art, c); art.querySelector(".health").innerHTML = healthIn(c); art.querySelector(".total b").textContent = tot(c); art.querySelector(".total span").textContent = week(c) + " this week";
 }
 function addChapter() {
@@ -699,12 +732,12 @@ const actions = {
   toggleForm: () => { $("form").classList.toggle("hidden"); $("f-name").focus(); },
   addChapter, addTopic,
   inc: el => bump(el, 1), dec: el => bump(el, -1),
-  openCal: el => { const d = new Date(); cal = { cid: getC(el).id, tid: getT(el).id, y: d.getFullYear(), m: d.getMonth(), sel: null }; renderModal(true); },
+  openCal: el => { const d = new Date(); cal = { cid: getC(el).id, tid: getT(el).id, y: d.getFullYear(), m: d.getMonth(), sel: null }; rowAnim = true; renderModal(true); },
   closeCal: () => closeModal(),
-  calNav: el => { const d = new Date(cal.y, cal.m + +el.dataset.d, 1); cal.y = d.getFullYear(); cal.m = d.getMonth(); cal.sel = null; renderModal(); },
-  pickDay: el => { cal.sel = cal.sel === el.dataset.k ? null : el.dataset.k; renderModal(); },
+  calNav: el => { const d = new Date(cal.y, cal.m + +el.dataset.d, 1); cal.y = d.getFullYear(); cal.m = d.getMonth(); cal.sel = null; rowAnim = true; renderModal(); },
+  pickDay: el => { cal.sel = cal.sel === el.dataset.k ? null : el.dataset.k; rowAnim = true; renderModal(); },
   rev: el => { const t = calT(), ids = el.dataset.ts.split(",").map(Number); t.rev = t.rev.filter(x => !ids.includes(x)); if (el.checked) t.rev.push(...ids); save(); const w = el.closest(".lgw"); if (w) { w.classList.toggle("done", el.checked); if (el.checked) w.classList.add("just"); } clearTimeout(rt); rt = setTimeout(renderModal, 700); },
-  revAll: el => { const t = calT(), ids = calShown(t); t.rev = t.rev.filter(x => !ids.includes(x)); const on = el.dataset.v === "1"; if (on) t.rev.push(...ids); save(); document.querySelectorAll(".lgw").forEach(w => { w.classList.toggle("done", on); if (on) w.classList.add("just"); }); clearTimeout(rt); rt = setTimeout(renderModal, 700); },
+  revAll: el => { const t = calT(), ids = calShown(t); t.rev = t.rev.filter(x => !ids.includes(x)); const on = el.dataset.v === "1"; if (on) t.rev.push(...ids); save(); document.querySelectorAll(".lgw").forEach(w => { w.classList.add("wave"); w.classList.toggle("done", on); if (on) w.classList.add("just"); }); clearTimeout(rt); rt = setTimeout(renderModal, 1300); },
   subForm: el => { addingSub = getT(el).id; opened.add(addingSub); renderList(); const i = document.querySelector("[data-in=sub]"); if (i) i.focus(); },
   addSub,
   hUndo: () => jump(-1), hRedo: () => jump(1),
@@ -718,7 +751,7 @@ const actions = {
   togAllSubs: el => { const c = getC(el), all = c.topics.every(t => opened.has(t.id)); c.topics.forEach(t => all ? opened.delete(t.id) : opened.add(t.id)); renderList(); },
   delAsk: el => { delConf = getT(el).id; editing = null; renderList(); },
   delNo: () => { delConf = null; renderList(); },
-  delYes: el => { const c = getC(el), id = delConf; c.topics = c.topics.filter(t => t.id !== id); delConf = null; save(); render(); },
+  delYes: el => { const c = getC(el), id = delConf, cl = document.querySelector(`.cell[data-t="${id}"]`); delConf = null; if (cl) cl.classList.add("leaving"); setTimeout(() => { c.topics = c.topics.filter(t => t.id !== id); save(); render(); }, 380); },
   pickTT: el => { const i = $("e-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); el.classList.toggle("on", k < 0); },
   togChips: el => { const w = $("cw"); w.classList.toggle("open"); const on = w.classList.contains("open"); el.textContent = on ? "Hide tags ▴" : "Show tags ▾"; if (on) $("chips").querySelectorAll(".tag").forEach((c, i) => { c.style.animationDelay = i * 28 + "ms"; c.classList.remove("pop2"); void c.offsetWidth; c.classList.add("pop2"); }); },
   togNote: el => el.parentNode.classList.toggle("open"),
@@ -732,6 +765,7 @@ const actions = {
   togAtt: el => { const k = +el.dataset.k; attOpen.has(k) ? attOpen.delete(k) : attOpen.add(k); el.parentNode.classList.toggle("open"); },
   viewImg: el => { const a = calT().att[+el.dataset.k][+el.dataset.i], o = document.createElement("div"); o.className = "lb"; o.innerHTML = `<figure><img src="${IMGS[a.id] || ""}" alt=""><figcaption>${esc(a.cap || "")}</figcaption></figure>`; o.onclick = () => o.remove(); document.body.appendChild(o); },
   rmImg: el => { const t = calT(), L = t.att[+el.dataset.k], a = L.splice(+el.dataset.i, 1)[0]; if (a) delete IMGS[a.id]; saveImgs(); save(); renderModal(); },
+  rpt: el => { const t = getT(el); t.rep = (t.rep || 0) + 1; if (t.rep >= 10) { t.rep = 0; bump(el, 1); return; } save(); const cl = el.closest(".cell"), b = cl.querySelector(".bub"); b.querySelector(".num").textContent = numTxt(t); pulse(b, cl, "+0.1"); },
   upAsk: el => { upKey = +el.dataset.k; $("up").click(); },
   flagImg: el => { const a = calT().att[+el.dataset.k][+el.dataset.i]; a.flag = a.flag === el.dataset.f ? "" : el.dataset.f; save(); renderModal(); },
   togSrcs: () => { hideSrc = !hideSrc; renderModal(); },
@@ -743,7 +777,7 @@ const actions = {
   minG: el => { const s = el.dataset.v; state.gmin = state.gmin || {}; state.gmin[s] = !state.gmin[s]; save(); renderList(); },
   delChAsk: el => { delCh = getC(el).id; renderList(); },
   delChNo: () => { delCh = null; renderList(); },
-  delChYes: () => { const id = delCh; state.chapters = state.chapters.filter(c => c.id !== id); delCh = null; save(); render(); },
+  delChYes: () => { const id = delCh, a = document.querySelector(`[data-c="${id}"]`); delCh = null; if (a) a.classList.add("leaving"); setTimeout(() => { state.chapters = state.chapters.filter(c => c.id !== id); save(); render(); }, 380); },
   rvAll: el => { const t = getT(el), c = getC(el); t.rev = [...new Set([...(t.rev || []), ...t.logs])]; save(); syncFill(t, c); },
   ttag: el => { const id = getC(el).id, s = TF[id] || (TF[id] = new Set()); toggle(s, el.dataset.v); renderList(); },
   pickTag: el => { const i = $("f-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); },
@@ -809,7 +843,7 @@ setInterval(() => { autoBak(); if (!bn && dirty && Date.now() - T0 > 6e5) { bn =
 addEventListener("beforeunload", e => { if (dirty && Date.now() - T0 > 6e5) { e.preventDefault(); e.returnValue = ""; } });
 $("file").addEventListener("change", e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { const d = JSON.parse(r.result), s = d.state || d; if (!s || !Array.isArray(s.chapters)) throw 0; autoBak(); state = s; state.tagMeta = state.tagMeta || {}; IMGS = d.imgs || {}; persist(); saveImgs(); hist = [JSON.stringify(state)]; hi = 0; render(); toast(`Imported ${s.chapters.length} chapters.`); } catch (x) { toast("That file doesn’t look like a backup from this tracker."); } e.target.value = ""; }; r.readAsText(f); });
 document.addEventListener("input", e => { const r = e.target; if (r.dataset && "aw" in r.dataset) { const a = calT().att[+r.dataset.k][+r.dataset.i]; a.w = +r.value; r.parentNode.querySelector("img").style.width = a.w + "px"; } });
-document.addEventListener("change", e => { const d = e.target.dataset || {}; if ("aw" in d) save(); else if (d.in === "cap") { calT().att[+d.k][+d.i].cap = e.target.value; save(); } });
+document.addEventListener("change", e => { const d = e.target.dataset || {}; if ("aw" in d) save(); else if (d.in === "lnote") { const t = calT(); (t.ln = t.ln || {})[+d.k] = e.target.value; save(); } else if (d.in === "cap") { calT().att[+d.k][+d.i].cap = e.target.value; save(); } });
 document.addEventListener("paste", e => {
   if (!cal || pasteKey == null) return;
   const it = [...((e.clipboardData && e.clipboardData.items) || [])].find(x => x.type.startsWith("image/")); if (!it) return;
