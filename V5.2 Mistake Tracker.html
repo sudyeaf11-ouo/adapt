@@ -397,6 +397,49 @@ html{scroll-behavior:smooth}
 .lgw.wave{transition-delay:calc(var(--k,0)*70ms)}
 .lgw.wave.done::before{animation-delay:calc(var(--k,0)*70ms)}
 .lnote{flex:1 1 100%;padding:4px 8px;font-size:12.5px}
+.sg{transition:padding .5s,background .5s}
+.sg-wrap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .75s cubic-bezier(.3,1,.4,1)}
+.sg.min .sg-wrap{grid-template-rows:0fr}
+.sg-in{min-height:0}
+.sg.min .sg-in,.sg.moving .sg-in{overflow:hidden}
+.sg.min .sg-body{display:block}
+.sg.min .gadd{display:flex}
+.sg.vend .sg-body>.card{animation:vend .85s cubic-bezier(.3,1.2,.5,1) both!important;animation-delay:calc(var(--i,0)*140ms)!important}
+@keyframes vend{0%{opacity:0;transform:translateY(-130%) scaleY(1.08)}50%{opacity:1;transform:translateY(0) scaleY(.94)}68%{transform:translateY(-10px) scaleY(1.03)}84%{transform:translateY(0) scaleY(.99)}100%{transform:none}}
+.sg .sw{position:absolute;left:62px;top:24px;width:28px;height:28px;border-radius:50%;box-shadow:0 0 22px color-mix(in srgb,var(--gc) 65%,transparent);transition:left .75s cubic-bezier(.3,1.3,.5,1),top .75s cubic-bezier(.3,1.3,.5,1),width .75s cubic-bezier(.3,1.5,.5,1),height .75s cubic-bezier(.3,1.5,.5,1),box-shadow .75s}
+.sg:not(.min) .sw{left:12px;top:12px;width:12px;height:12px;box-shadow:0 0 8px color-mix(in srgb,var(--gc) 50%,transparent)}
+.sg-head h2 .mn{margin-right:46px;transition:margin-right .75s cubic-bezier(.3,1.3,.5,1)}
+.sg:not(.min) .sg-head h2 .mn{margin-right:6px}
+.rrow{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;margin-bottom:6px;border:1px dashed var(--line);border-radius:10px;font-size:13.5px;color:var(--mute);animation:rowin .4s both}
+.rrow time{font-size:12.5px;white-space:nowrap}
+.lnote.saved{border-color:#2e9d62;animation:savedf .9s ease-out}
+@keyframes savedf{0%{box-shadow:0 0 0 0 rgba(46,157,98,.8)}100%{box-shadow:0 0 0 10px rgba(46,157,98,0)}}
+html{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
+.rv{opacity:0;transform:translateY(46px);transition:opacity .6s,transform .75s cubic-bezier(.2,.9,.3,1.1)}
+.rv.in{opacity:1;transform:none}
+.card.rv{transition:opacity .6s,transform .75s cubic-bezier(.2,.9,.3,1.1),background .9s,border-color .9s,box-shadow .9s}
+.cwrap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .7s cubic-bezier(.3,1,.4,1)}
+.card.min .cwrap{grid-template-rows:0fr}
+.cin{min-height:0}
+.card.min .cin,.card.moving .cin{overflow:hidden}
+.card.min .cbody{display:block}
+.card.vend .board>.cell{animation:vend .8s cubic-bezier(.3,1.2,.5,1) both!important;animation-delay:calc(var(--i,0)*120ms)!important}
+.sg-head h2{padding-left:40px;transition:padding-left .75s cubic-bezier(.3,1.3,.5,1)}
+.sg:not(.min) .sg-head h2{padding-left:0}
+.sg .sw{left:22px}
+.sg:not(.min) .sw{left:12px}
+.rv{opacity:0;transform:translateY(60px) scale(.94);transition:opacity .45s,transform .55s}
+.rv.in{opacity:1;transform:none;animation:revin .95s cubic-bezier(.25,.8,.3,1) both}
+@keyframes revin{0%{opacity:0;transform:translateY(60px) scale(.94)}55%{opacity:1;transform:translateY(-6px) scale(1.06)}100%{opacity:1;transform:none}}
+.sg.rv{transition:opacity .45s,transform .55s,padding .5s,background .5s}
+.card.rv{transition:opacity .45s,transform .55s,background .9s,border-color .9s,box-shadow .9s}
+.rv.in.leaving{animation:leave .38s ease-in forwards}
+.scr{color:#4dffa0!important;text-shadow:0 0 14px rgba(46,255,138,.85);letter-spacing:.04em}
+#sp{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#6fdc97,#5aa8ff);pointer-events:none}
+.sg-body>.card.enter{animation:none!important}
+.sg.vend .sg-body>.card{animation-delay:calc(var(--i,0)*140ms + 250ms)!important}
+.sg-body>.card.vend1{animation:vend .85s cubic-bezier(.3,1.2,.5,1) both!important}
 </style>
 </head>
 <body>
@@ -430,6 +473,7 @@ html{scroll-behavior:smooth}
   </section>
 
   <div id="list"></div>
+<div id="sp"></div>
 <div id="banner" class="banner hidden"><span>⏳ This tab has been open for over 10 minutes. Export a backup now (copy the text somewhere safe) so your data stays safe if something goes wrong.</span><button class="btn primary" data-a="bkNow">Export backup</button><button class="btn ghost" data-a="bkLater">Later</button></div>
 <input type="file" id="up" accept="image/*" multiple hidden>
 <div id="modal"></div>
@@ -568,7 +612,7 @@ function groupWrap(list, htmls) {
   const g = {}, order = [];
   list.forEach((c, i) => { (g[c.subject] = g[c.subject] || (order.push(c.subject), [])).push(htmls[i]); });
   return order.map(s => { const k = gStats(s), min = (state.gmin || {})[s];
-    return `<section class="sg${min ? " min" : ""}" data-g="${esc(s)}" style="--h:${hue(s)}"><button class="cx" data-a="delGAsk" data-v="${esc(s)}" aria-label="Delete subject" title="Delete subject">✕</button>${delG === s ? gConf(s, k) : ""}<div class="sg-head" data-a="minG" data-v="${esc(s)}"><div><h2><button class="x mn" aria-label="Collapse subject">${min ? "▸" : "▾"}</button><span class="sw"></span>${esc(s)}</h2><div class="meta">${k.n} chapters · ${k.T} mistakes</div></div><div class="total"><b>${k.p}%</b><span>adapted</span></div></div><div class="prog" data-a="minG" data-v="${esc(s)}"><div class="bar"><i style="width:${k.p}%"></i></div><span>${k.R} of ${k.T} reviewed</span></div><div class="sg-body">${g[s].join("")}</div><div class="gadd"><input data-in="gch" placeholder="Add a chapter to ${esc(s)}…" aria-label="New chapter name"><button class="btn" data-a="gchAdd" data-v="${esc(s)}">+ Add chapter</button></div></section>`; }).join("");
+    return `<section class="sg${min ? " min" : ""}" data-g="${esc(s)}" style="--h:${hue(s)}"><button class="cx" data-a="delGAsk" data-v="${esc(s)}" aria-label="Delete subject" title="Delete subject">✕</button>${delG === s ? gConf(s, k) : ""}<div class="sg-head" data-a="minG" data-v="${esc(s)}"><div><h2><span class="sw"></span>${esc(s)}</h2><div class="meta">${k.n} chapters · ${k.T} mistakes</div></div><div class="total"><b>${k.p}%</b><span>adapted</span></div></div><div class="prog" data-a="minG" data-v="${esc(s)}"><div class="bar"><i style="width:${k.p}%"></i></div><span>${k.R} of ${k.T} reviewed</span></div><div class="sg-wrap"><div class="sg-in"><div class="sg-body">${g[s].join("")}</div><div class="gadd"><input data-in="gch" placeholder="Add a chapter to ${esc(s)}…" aria-label="New chapter name"><button class="btn" data-a="gchAdd" data-v="${esc(s)}">+ Add chapter</button></div></div></div></section>`; }).join("");
 }
 function _ad() {
   chime([392, 523, 659, 784, 1047, 1319]);
@@ -594,6 +638,22 @@ function closeModal() { const k = cal && { c: cal.cid, t: cal.tid }; cal = null;
 const _sf = t => { const f = document.querySelector(`[data-t="${t.id}"] .fill`); if (f) { f.style.height = rpct(t) + "%"; f.parentNode.style.setProperty("--r", rpct(t)); } };
 const numTxt = t => { const n = t.logs.length, r = t.rep || 0; return r ? `${n}.${r}` : `${n}`; };
 let rowAnim = false;
+function vendC(a) { const cs = [...a.querySelectorAll(".board>.cell")]; cs.forEach((c, i) => c.style.setProperty("--i", i)); a.classList.add("vend", "moving"); clearTimeout(a._vt); a._vt = setTimeout(() => a.classList.remove("vend", "moving"), 1000 + cs.length * 120); }
+const SC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&*@";
+function scr(h) {
+  const n = [...h.childNodes].find(x => x.nodeType === 3 && x.nodeValue.trim()); if (!n) return;
+  if (!h._busy) h._txt = n.nodeValue; const txt = h._txt, L = txt.length; clearInterval(h._si); h._busy = true; h.classList.add("scr"); let f = 0;
+  h._si = setInterval(() => { f++; const done = Math.floor(f / 20 * L); n.nodeValue = txt.split("").map((c, i) => c === " " || i < done ? c : SC[Math.floor(Math.random() * SC.length)]).join(""); if (f >= 22) { clearInterval(h._si); n.nodeValue = txt; h._busy = false; h.classList.remove("scr"); } }, 38);
+}
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; const el = e.target; io.unobserve(el); el.classList.add("in"); if (el.dataset.g) revealed.add(el.dataset.g); { const h = el.querySelector(el.classList.contains("sg") ? ".sg-head h2" : ".ch-head h2"); if (h) scr(h); if (el.classList.contains("sg") && !el._vd && !el.classList.contains("min")) { el._vd = 1; vend(el); } } }), { threshold: 0, rootMargin: "0px 0px -6% 0px" }) : null;
+const sp = $("sp"); let sq = 0;
+addEventListener("scroll", () => { if (sq) return; sq = requestAnimationFrame(() => { sq = 0; const h = document.documentElement, m = h.scrollHeight - h.clientHeight; sp.style.transform = `scaleX(${m > 0 ? h.scrollTop / m : 0})`; }); }, { passive: true });
+const revealed = new Set();
+function watchRv() { if (!io) return; document.querySelectorAll(".sg").forEach(el => { if (!el._rv) { el._rv = 1; if (revealed.has(el.dataset.g)) return; el.classList.add("rv"); io.observe(el); } }); }
+function _watchOld() { if (!io) return; document.querySelectorAll(".sg").forEach(el => { if (!el._rv) { el._rv = 1; el.classList.add("rv"); io.observe(el); } }); }
+if (io) new MutationObserver(watchRv).observe($("list"), { childList: true, subtree: true });
+const repRows = t => { const L = (t.reps || []).filter(x => cal.sel ? dk(x) === cal.sel : (new Date(x).getFullYear() === cal.y && new Date(x).getMonth() === cal.m)).sort((a, b) => b - a); return L.length ? `<div class="lg-head" style="margin-top:14px"><span>🔁 Repeated mistakes · ${L.length}</span></div>${L.map(x => `<div class="rrow"><span>🔁 Recorded a repeated mistake</span><time>${new Date(x).toLocaleString([], { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}</time></div>`).join("")}` : ""; };
+function vend(g) { const cs = [...g.querySelectorAll(".sg-body>.card")]; cs.forEach((c, i) => c.style.setProperty("--i", i)); g.classList.add("vend", "moving"); clearTimeout(g._vt); g._vt = setTimeout(() => g.classList.remove("vend", "moving"), 1500 + cs.length * 140); }
 const gConf = (s, k) => `<div class="pop cpop"><div class="edit"><b>Delete subject “${esc(s)}”?</b><div class="meta">${k.n} chapters and ${k.T} mistakes go with it.</div><div style="margin-top:10px;display:flex;gap:8px"><button class="btn del-btn" data-a="delGYes">${TR} Delete</button><button class="btn" data-a="delGNo">Cancel</button></div></div></div>`;
 function addImgFile(f, k) { const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { const s = Math.min(1, 1000 / Math.max(im.width, im.height)), cv = document.createElement("canvas"), cx = cv.getContext("2d"); cv.width = Math.round(im.width * s); cv.height = Math.round(im.height * s); cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(im, 0, 0, cv.width, cv.height); const id = uid(), t = calT(); if (!t) return; IMGS[id] = cv.toDataURL("image/jpeg", .78); saveImgs(); t.att = t.att || {}; (t.att[k] = t.att[k] || []).push({ id, w: 160, cap: "", flag: "" }); attOpen.add(k); save(); renderModal(); }; im.src = rd.result; }; rd.readAsDataURL(f); }
 document.addEventListener("pointerdown", e => { const b = e.target.closest && e.target.closest(".btn,.nbtn"); if (!b) return; const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2, i = document.createElement("i"); i.className = "rip"; i.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`; b.appendChild(i); setTimeout(() => i.remove(), 650); });
@@ -663,7 +723,7 @@ function renderModal(open) {
     <div class="cal-nav"><button class="x" data-a="calNav" data-d="-1" aria-label="Previous month">‹</button><b>${new Date(cal.y, cal.m, 1).toLocaleDateString([], { month: "long", year: "numeric" })}</b><button class="x" data-a="calNav" data-d="1" aria-label="Next month">›</button></div>
     <div class="dow">${"SMTWTFS".split("").map(d => `<span>${d}</span>`).join("")}</div><div class="days">${cells}</div>
     <div class="lg-head"><span>${cal.sel ? "Selected day" : "This month"} · ${shown.length}</span><span><button class="btn ghost" data-a="togSrcs">${hideSrc ? "Show" : "Hide"} source tags</button><button class="btn ghost" data-a="revAll" data-v="1">Mark all reviewed</button><button class="btn ghost" data-a="revAll" data-v="0">Clear</button></span></div>
-    ${blocks(shown).map((g, ix) => `<div class="lgw${ra ? " ent" : ""}${g.every(x => t.rev.includes(x)) ? " done" : ""}" style="--k:${ix}"><div class="lg"><label class="lgl"><input type="checkbox" data-a="rev" data-ts="${g.join(",")}" ${g.every(x => t.rev.includes(x)) ? "checked" : ""}><span>${tf(g[0])}${g.length > 1 ? " – " + hm(g[g.length - 1]) : ""}</span></label><em>${g.length > 1 ? g.length + " mistakes · " : ""}Reviewed</em></div>${rowX(t, g)}</div>`).join("") || `<div class="hint">No mistakes logged ${cal.sel ? "on this day" : "this month"}.</div>`}
+    ${blocks(shown).map((g, ix) => `<div class="lgw${ra ? " ent" : ""}${g.every(x => t.rev.includes(x)) ? " done" : ""}" style="--k:${ix}"><div class="lg"><label class="lgl"><input type="checkbox" data-a="rev" data-ts="${g.join(",")}" ${g.every(x => t.rev.includes(x)) ? "checked" : ""}><span>${tf(g[0])}${g.length > 1 ? " – " + hm(g[g.length - 1]) : ""}</span></label><em>${g.length > 1 ? g.length + " mistakes · " : ""}Reviewed</em></div>${rowX(t, g)}</div>`).join("") || `<div class="hint">No mistakes logged ${cal.sel ? "on this day" : "this month"}.</div>`}${repRows(t)}
   </div></div>`;
   if (sc) M.querySelector(".sheet").scrollTop = sc;
 }
@@ -683,18 +743,18 @@ function renderList() {
     return `<article class="card${seen.has(c.id) ? "" : " enter"}${c.min ? " min" : ""}${cr(c) === 100 ? " safe" : ""}" data-c="${c.id}" style="animation-delay:${i * 70}ms">
       <button class="cx" data-a="delChAsk" aria-label="Delete chapter" title="Delete chapter">✕</button><div class="ch-head" data-a="minC" title="Click to expand or collapse">
         <div>
-          <h2><button class="x mn" data-a="minC" aria-label="Minimize or expand chapter" title="Minimize / expand">${c.min ? "▸" : "▾"}</button>${esc(c.name)}</h2>
+          <h2>${esc(c.name)}</h2>
           <div class="tags"><button class="tag s" style="--h:${hue(c.subject)}" data-a="fsub" data-v="${esc(c.subject)}">${esc(c.subject)}</button>${c.tags.map(t => `<span class="tagw"><button class="tag t" style="${tcss(t)}" data-a="ftag" data-v="${esc(t)}">${temo(t)} ${esc(t)}</button><button class="tx" data-a="rmTag" data-v="${esc(t)}" aria-label="Remove tag ${esc(t)}" title="Remove from this chapter">×</button></span>`).join("")}${tagAdd(c)}</div>
           ${c.source ? `<div class="meta">Source: ${esc(c.source)}</div>` : ""}
           ${c.note ? nbox("Description", `<div class="rich meta">${md(c.note)}</div>`) : ""}
         </div>
         <div class="total"><b>${tot(c)}</b><span>${week(c)} this week</span><div class="health" title="Chapter health: how much of it you have reviewed">${healthIn(c)}</div></div>
       </div>
-      ${delCh === c.id ? chConf(c) : ""}${progHTML(c)}<div class="cbody">${ctools(c)}${ttags(c)}<div class="board">${c.topics.length ? topicsVis(c).map(t => cell(t, tot(c))).join("") : `<div class="hint">Add a topic below and it will appear here as a bubble.</div>`}</div>
+      ${delCh === c.id ? chConf(c) : ""}${progHTML(c)}<div class="cwrap"><div class="cin"><div class="cbody">${ctools(c)}${ttags(c)}<div class="board">${c.topics.length ? topicsVis(c).map(t => cell(t, tot(c))).join("") : `<div class="hint">Add a topic below and it will appear here as a bubble.</div>`}</div>
       
       <div class="addt"><input placeholder="Add a topic, e.g. Phases of meiosis" data-in="topic" aria-label="Topic name"><button class="btn" data-a="addTopic">Add topic</button></div>
       
-    </div></article>`;
+    </div></div></div></article>`;
   }));
 }
 const render = () => { renderChips(); renderList(); state.chapters.forEach(c => { seen.add(c.id); chG[c.id] = chOK(c); c.topics.forEach(t => seen.add(t.id)); }); };
@@ -705,7 +765,7 @@ const toggle = (set, v) => set.has(v) ? set.delete(v) : set.add(v);
 
 function bump(el, d) {
   const t = getT(el), c = getC(el);
-  if (d > 0) t.logs.push(Date.now()); else if (t.rep) t.rep--; else if (t.logs.length) { t.logs.pop(); t.rev = (t.rev || []).filter(x => t.logs.includes(x)); } else return;
+  if (d > 0) t.logs.push(Date.now()); else if (t.rep) { t.rep--; (t.reps || []).pop(); } else if (t.logs.length) { t.logs.pop(); t.rev = (t.rev || []).filter(x => t.logs.includes(x)); } else return;
   save();
   const n = t.logs.length, b = el.closest(".cell").querySelector(".bub"), art = el.closest("[data-c]");
   b.style.width = size(n) + "px"; b.style.setProperty("--sz", size(n)); b.style.setProperty("--p", shade(n) + "%"); pulse(b, el.closest(".cell"), d);
@@ -765,7 +825,7 @@ const actions = {
   togAtt: el => { const k = +el.dataset.k; attOpen.has(k) ? attOpen.delete(k) : attOpen.add(k); el.parentNode.classList.toggle("open"); },
   viewImg: el => { const a = calT().att[+el.dataset.k][+el.dataset.i], o = document.createElement("div"); o.className = "lb"; o.innerHTML = `<figure><img src="${IMGS[a.id] || ""}" alt=""><figcaption>${esc(a.cap || "")}</figcaption></figure>`; o.onclick = () => o.remove(); document.body.appendChild(o); },
   rmImg: el => { const t = calT(), L = t.att[+el.dataset.k], a = L.splice(+el.dataset.i, 1)[0]; if (a) delete IMGS[a.id]; saveImgs(); save(); renderModal(); },
-  rpt: el => { const t = getT(el); t.rep = (t.rep || 0) + 1; if (t.rep >= 10) { t.rep = 0; bump(el, 1); return; } save(); const cl = el.closest(".cell"), b = cl.querySelector(".bub"); b.querySelector(".num").textContent = numTxt(t); pulse(b, cl, "+0.1"); },
+  rpt: el => { const t = getT(el); t.rep = (t.rep || 0) + 1; (t.reps = t.reps || []).push(Date.now()); if (t.rep >= 10) { t.rep = 0; bump(el, 1); return; } save(); const cl = el.closest(".cell"), b = cl.querySelector(".bub"); b.querySelector(".num").textContent = numTxt(t); pulse(b, cl, "+0.1"); },
   upAsk: el => { upKey = +el.dataset.k; $("up").click(); },
   flagImg: el => { const a = calT().att[+el.dataset.k][+el.dataset.i]; a.flag = a.flag === el.dataset.f ? "" : el.dataset.f; save(); renderModal(); },
   togSrcs: () => { hideSrc = !hideSrc; renderModal(); },
@@ -773,8 +833,8 @@ const actions = {
   delGAsk: el => { delG = el.dataset.v; renderList(); },
   delGNo: () => { delG = null; renderList(); },
   delGYes: () => { const s = delG; state.chapters = state.chapters.filter(c => c.subject !== s); delG = null; save(); render(); },
-  gchAdd: el => { const inp = el.parentNode.querySelector("input"), n = inp.value.trim(); if (!n) { inp.focus(); return; } state.chapters.unshift({ id: uid(), name: n, subject: el.dataset.v, tags: [], source: "", note: "", topics: [] }); save(); render(); },
-  minG: el => { const s = el.dataset.v; state.gmin = state.gmin || {}; state.gmin[s] = !state.gmin[s]; save(); renderList(); },
+  gchAdd: el => { const nid = uid(), inp = el.parentNode.querySelector("input"), n = inp.value.trim(); if (!n) { inp.focus(); return; } state.chapters.unshift({ id: nid, name: n, subject: el.dataset.v, tags: [], source: "", note: "", topics: [] }); save(); render(); const na = document.querySelector(`[data-c="${nid}"]`); if (na) { na.classList.add("vend1"); setTimeout(() => na.classList.remove("vend1"), 1200); } },
+  minG: el => { const s = el.dataset.v; state.gmin = state.gmin || {}; state.gmin[s] = !state.gmin[s]; save(); const g = [...document.querySelectorAll(".sg")].find(x => x.dataset.g === s); if (!g) { renderList(); return; } const open = !state.gmin[s]; g.classList.toggle("min", !open); g.classList.add("moving"); const mn = g.querySelector(".sg-head .mn"); if (mn) mn.textContent = open ? "▾" : "▸"; if (open) vend(g); else { g.classList.remove("vend"); setTimeout(() => g.classList.remove("moving"), 800); } },
   delChAsk: el => { delCh = getC(el).id; renderList(); },
   delChNo: () => { delCh = null; renderList(); },
   delChYes: () => { const id = delCh, a = document.querySelector(`[data-c="${id}"]`); delCh = null; if (a) a.classList.add("leaving"); setTimeout(() => { state.chapters = state.chapters.filter(c => c.id !== id); save(); render(); }, 380); },
@@ -782,8 +842,8 @@ const actions = {
   ttag: el => { const id = getC(el).id, s = TF[id] || (TF[id] = new Set()); toggle(s, el.dataset.v); renderList(); },
   pickTag: el => { const i = $("f-tags"), v = el.dataset.v, a = i.value.split(",").map(s => s.trim()).filter(Boolean), k = a.map(s => s.toLowerCase()).indexOf(v); k < 0 ? a.push(v) : a.splice(k, 1); i.value = a.join(", "); },
   tagMenu: () => $("tag-menu").classList.toggle("hidden"),
-  minC: el => { const c = getC(el); c.min = !c.min; save(); renderList(); },
-  minAll: () => { const any = state.chapters.some(c => !c.min); state.chapters.forEach(c => c.min = any); save(); renderList(); },
+  minC: el => { const c = getC(el); c.min = !c.min; save(); const a = el.closest(".card"); a.classList.toggle("min", c.min); a.classList.add("moving"); if (c.min) { a.classList.remove("vend"); setTimeout(() => a.classList.remove("moving"), 800); } else vendC(a); },
+  minAll: () => { const any = state.chapters.some(c => !c.min); state.chapters.forEach(c => c.min = any); save(); document.querySelectorAll(".card[data-c]").forEach(a => { a.classList.toggle("min", any); a.classList.add("moving"); if (any) { a.classList.remove("vend"); setTimeout(() => a.classList.remove("moving"), 800); } else vendC(a); }); $("minall").textContent = any ? "Expand all" : "Collapse all"; },
   togSubs: el => { const id = getT(el).id; opened.has(id) ? opened.delete(id) : opened.add(id); el.closest(".cell").querySelector(".subwrap").classList.toggle("open", opened.has(id)); },
   tagForm: el => { addingTag = getC(el).id; renderList(); const i = document.querySelector("[data-in=tag]"); if (i) i.focus(); },
   addTag,
@@ -820,6 +880,7 @@ document.addEventListener("keydown", e => {
   else if (e.key === "Enter" && d.in === "tag") addTag(e.target);
   else if (e.key === "Enter" && d.in === "src") actions.addSrc(e.target.parentNode.querySelector("[data-a=addSrc]"));
   else if (e.key === "Enter" && d.in === "gch") actions.gchAdd(e.target.parentNode.querySelector("[data-a=gchAdd]"));
+  else if (e.key === "Enter" && d.in === "lnote") { const i = e.target; i.blur(); i.classList.add("saved"); setTimeout(() => i.classList.remove("saved"), 900); }
   else if ((e.key === "Enter" || e.key === " ") && d.a === "togSubs") { e.preventDefault(); actions.togSubs(e.target); }
   else if (e.key === "Escape" && cal) closeModal();
 });
